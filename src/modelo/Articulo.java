@@ -52,14 +52,13 @@ public class Articulo {
 	public TipoAmortizacion getTipoAmortizacion() {
 		return tipoAmortizacion;
 	}
-	
+
 	public void usarArticulo() {
-		
+
 	}
-	
+
 	public ArticuloView toView() {
 		return new ArticuloView(idArticulo, nombre, numeroUsos);
 	}
-
 
 }

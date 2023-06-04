@@ -17,10 +17,10 @@ public class Sede {
 		this.nivel = nivel;
 	}
 
-	public void agregarArticulo(Articulo x) {
-		articulos.add(x);
+	public void incorporarArticulo(TipoArticulo tipoArticulo) {
+		articulos.add(new Articulo(tipoArticulo));
 	}
-	
+
 	public String getBarrio() {
 		return barrio;
 	}
