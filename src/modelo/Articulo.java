@@ -58,7 +58,7 @@ public class Articulo {
 	}
 
 	public ArticuloView toView() {
-		return new ArticuloView(idArticulo, nombre, numeroUsos);
+		return new ArticuloView(idArticulo, nombre,precio, numeroUsos);
 	}
 
 }

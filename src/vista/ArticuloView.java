@@ -3,11 +3,13 @@ package vista;
 public class ArticuloView {
 	private int idArticulo;
 	private String nombre;
+	private double precio;
 	private int numeroUsos;
-	
-	public ArticuloView(int idArticulo, String nombre, int numeroUsos) {
+
+	public ArticuloView(int idArticulo, String nombre, double precio, int numeroUsos) {
 		this.idArticulo = idArticulo;
 		this.nombre = nombre;
+		this.precio = precio;
 		this.numeroUsos = numeroUsos;
 	}
 
@@ -23,22 +25,29 @@ public class ArticuloView {
 		return numeroUsos;
 	}
 
+	public double getPrecio() {
+		return precio;
+	}
+
 	public void setIdArticulo(int idArticulo) {
 		this.idArticulo = idArticulo;
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 
 	public void setNumeroUsos(int numeroUsos) {
 		this.numeroUsos = numeroUsos;
 	}
 
-	@Override
-	public String toString() {
-		return "ArticuloView [idArticulo=" + idArticulo + ", nombre=" + nombre + ", numeroUsos=" + numeroUsos + "]";
+	public void setPrecio(double precio) {
+		this.precio = precio;
 	}
 
+	@Override
+	public String toString() {
+		return "ArticuloView [idArticulo=" + idArticulo + ", nombre=" + nombre + ", precio=" + precio + ", numeroUsos="
+				+ numeroUsos + "]";
+	}
 
 }
