@@ -1,27 +1,30 @@
 package modelo;
 
-import vista.ArticuloView;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Articulo {
 	private static int contador = 0;
 	private int idArticulo;
-	private boolean isActive;
-	private String nombre;
+	private int idTipoArticulo;
+	private boolean desgastado;
+	private String nombre, descripcion;
 	private double precio;
 	private int numeroUsos;
-	private LocalDate fechaDeFabricacion;
+	private Date fechaDeFabricacion;
 	private TipoAmortizacion tipoAmortizacion;
 
-	public Articulo(TipoArticulo tipoArticulo) {
-		this.isActive = true;
+	public Articulo(TipoArticulo tipoArticulo, String descripcion, double precio) {
+		this.desgastado = false;
 		this.idArticulo = Articulo.contador;
-		this.nombre = tipoArticulo.getDescripcion();
-		this.precio = tipoArticulo.getPrecio();
+		this.idTipoArticulo = tipoArticulo.getIdTipoArticulo();
+		this.nombre = tipoArticulo.getNombre();
+		this.precio = precio;
 		this.numeroUsos = tipoArticulo.getNumeroUsos();
-		this.fechaDeFabricacion = tipoArticulo.getFechaDeFabricacion();
+		this.fechaDeFabricacion = new Date();
 		this.tipoAmortizacion = tipoArticulo.getTipoAmortizacion();
+		this.descripcion = descripcion;
 		Articulo.contador++;
 	}
 
@@ -30,11 +33,27 @@ public class Articulo {
 	}
 
 	public boolean getIsActive() {
-		return isActive;
+		return desgastado;
+	}
+
+	public static int getContador() {
+		return contador;
+	}
+
+	public int getIdTipoArticulo() {
+		return idTipoArticulo;
+	}
+
+	public boolean isDesgastado() {
+		return desgastado;
+	}
+
+	public String getNombre() {
+		return nombre;
 	}
 
 	public String getDescripcion() {
-		return nombre;
+		return descripcion;
 	}
 
 	public double getPrecio() {
@@ -45,8 +64,18 @@ public class Articulo {
 		return numeroUsos;
 	}
 
-	public LocalDate getFechaDeFabricacion() {
+	public Date getFechaDeFabricacion() {
 		return fechaDeFabricacion;
+	}
+
+	
+
+	@Override
+	public String toString() {
+		return "Articulo [idArticulo=" + idArticulo + ", idTipoArticulo=" + idTipoArticulo + ", isActive=" + desgastado
+				+ ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio + ", numeroUsos="
+				+ numeroUsos + ", fechaDeFabricacion=" + fechaDeFabricacion + ", tipoAmortizacion=" + tipoAmortizacion
+				+ "]";
 	}
 
 	public TipoAmortizacion getTipoAmortizacion() {
@@ -57,8 +86,6 @@ public class Articulo {
 
 	}
 
-	public ArticuloView toView() {
-		return new ArticuloView(idArticulo, nombre, numeroUsos);
-	}
+
 
 }

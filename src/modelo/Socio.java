@@ -1,6 +1,5 @@
 package modelo;
 
-import vista.SocioView;
 
 public class Socio extends Usuario {
 	
@@ -12,7 +11,17 @@ public class Socio extends Usuario {
 		this.nivel = nivel;
 		this.isActive = true;
 	}
+	
 
+	@Override
+	public String toString() {
+		return "Socio [nivel=" + nivel + ", isActive=" + isActive + "]";
+	}
+
+
+	public boolean soySocio() {
+		return true;
+	} 
 	public String getNombre() {
 		return nombre;
 	}
@@ -49,8 +58,5 @@ public class Socio extends Usuario {
 		this.isActive = isActive;
 	}
 	
-	public SocioView toView() {
-		return new SocioView(nombre, apellido, dni);
-	}
 	
 }

@@ -1,10 +1,15 @@
 package modelo;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class SupertlonSingleton {
 	private static SupertlonSingleton instancia;
-	private Usuario usuarioActual;
 	private ArrayList<Usuario> usuarios;
 	private ArrayList<TipoClase> tiposClases;
 	private ArrayList<TipoArticulo> tiposArticulos;
@@ -15,7 +20,6 @@ public class SupertlonSingleton {
 		this.tiposClases = new ArrayList<TipoClase>();
 		this.tiposArticulos = new ArrayList<TipoArticulo>();
 		this.sedes = new ArrayList<Sede>();
-		this.usuarioActual = new SoporteTecnico("Admin", "Admin", "1234");
 	};
 
 	public static SupertlonSingleton getInstance() {
@@ -25,20 +29,17 @@ public class SupertlonSingleton {
 		return instancia;
 	}
 
-	// Acceso
+	// Acceso - READY
 	public void ingresar(String dni) {
 		for (Usuario usuario : usuarios) {
 			if (usuario.dni == dni) {
-				usuarioActual = usuario;
+				UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
+				usuarioSingleton.setUsuarioActual(usuario);
 			}
 		}
 	}
 
-	public Usuario getUsuarioActual() {
-		return usuarioActual;
-	}
-
-	// Metodos Soporte Tecnico
+	// METODO SOPORTE TECNICO
 
 	public void agregarUsuario(Usuario x) {
 		usuarios.add(x);
@@ -58,40 +59,36 @@ public class SupertlonSingleton {
 		tiposArticulos.add(x);
 	}
 
-	public void agregarTipoClase(TipoClase x) {
-		tiposClases.add(x);
-	}
-
-	// Metodos Administrativo
-
-	public void agregarArticulo(int idTipoArticulo, int cantidad, String barrio) {
-		Sede sede = buscarSede(barrio);
-		TipoArticulo tipoArticulo = buscarTipoArticulo(idTipoArticulo);
-		if (sede != null && tipoArticulo != null) {
-			for (int i = cantidad; i > 0; i--) {
-				sede.incorporarArticulo(tipoArticulo);
-			}
+	// READY
+	public void agregarTipoClase(String nombreClase, boolean online,
+			HashMap<Integer, List<CantidadDetalle>> cantidadArticulo) {
+		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
+		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
+		if (usuarioActual.soySoporteTecnico()) {
+			TipoClase nuevoTipoClase = new TipoClase(nombreClase, online, cantidadArticulo);
+			tiposClases.add(nuevoTipoClase);
 		}
 	}
 
-	// Metodos de busqueda
+	// METODO ADMINISTRATIVO
 
-	private Sede buscarSede(String barrio) {
-		for (Sede sede : sedes) {
-			if (sede.getBarrio() == barrio) {
-				return sede;
-			}
+	public void agendarClase(TipoClase tipoClase, Sede sede, Emplazamiento emplazamiento, LocalDateTime dateInicio,
+			LocalDateTime dateFin) {
+		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
+		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
+		if (usuarioActual.soyAdministrativo()) {
 		}
-		return null;
+		sede.agendarClase(tipoClase, emplazamiento, dateInicio, dateFin);
 	}
 
-	private TipoArticulo buscarTipoArticulo(int idTipoArticulo) {
-		for (TipoArticulo tipoArticulo : tiposArticulos) {
-			if (tipoArticulo.getIdTipoArticulo() == idTipoArticulo) {
-				return tipoArticulo;
-			}
+	// METODOS DE USUARIO
+
+	public void inscribirseClase(Clase clase) {
+		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
+		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
+		if (usuarioActual.soySocio()) { // Verifica que el usuario es un socio
+			clase.inscribirse(usuarioActual);
 		}
-		return null;
 	}
 
 	// Getters and Setter
@@ -110,6 +107,10 @@ public class SupertlonSingleton {
 
 	public ArrayList<Sede> getSedes() {
 		return sedes;
+	}
+	
+	public void addTipoClase(TipoClase x) { // BORRAR
+		tiposClases.add(x);
 	}
 
 }

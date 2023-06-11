@@ -12,41 +12,14 @@ public abstract class Usuario {
 		this.dni = dni;
 	}
 
-	// Metodos Soporte Tecnico
-	public void crearSede(String barrio, Nivel nivel, double precioAlquiler) {
-	};
-
-	public void crearAdministrativo(String nombre, String apellido, String dni, ArrayList<String> sedes) {
+	public boolean soySoporteTecnico() {
+		return false;
 	}
-
-	public void crearSocio(String nombre, String apellido, String dni) {
+	public boolean soyAdministrativo() {
+		return false;
 	}
-
-	public void crearSoporteTecnico(String nombre, String apellido, String dni) {
-	}
-
-	public void crearTipoClase() {
-	}
-
-	public void crearTipoArticulo(String descripcion, double precio, int numeroUsos, LocalDate fechaDeFabricacion,
-			TipoAmortizacion tipoAmortizacion) {
-	}
-
-	// Metodos Administrativo
-
-	public void incorporarArticulo() {
-	}
-
-	public void darDeBajaArticulo() {
-	}
-
-	public void cambiarEstadoClase() {
-	}
-
-	public void darAltaSocio() {
-	}
-
-	public void modificarSocio() {
+	public boolean soySocio() {
+		return false;
 	}
 
 }
