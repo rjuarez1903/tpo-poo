@@ -15,7 +15,6 @@ public class Sede {
 	private ArrayList<Clase> clases = new ArrayList<>();
 	private ArrayList<Clase> clasesAlmacenadas = new ArrayList<>(); // DB Streaming - TODO
 	private ArrayList<Emplazamiento> emplazamientos = new ArrayList<>();
-	public Clase claseTest; // ELIMINAR
 
 	public Sede(String barrio, double precioAlquiler, Nivel nivel) {
 		this.barrio = barrio;
@@ -23,43 +22,73 @@ public class Sede {
 		this.nivel = nivel;
 	}
 
-	public void incorporarArticulo(TipoArticulo tipoArticulo, String descripcion, double precio) {
-		articulos.add(new Articulo(tipoArticulo, descripcion, precio));
+	// ready
+	public void incorporarArticulo(TipoArticulo tipoArticulo, String descripcion, double precio, int cantidad) {
+		for (int i = cantidad; i > 0; i--) {
+			articulos.add(new Articulo(tipoArticulo, descripcion, precio));
+		}
 	}
 
-	// READY
+	// ready
 	public void agendarClase(TipoClase tipoClase, Emplazamiento emplazamiento, LocalDateTime dateInicio,
 			LocalDateTime dateFin) {
 		ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal = new ArrayList<>();
 		HashMap<Integer, List<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
-
 		for (Entry<Integer, List<CantidadDetalle>> entry : mapa.entrySet()) {
 			Integer idTipoArticulo = entry.getKey();
 			List<CantidadDetalle> values = entry.getValue();
 			for (CantidadDetalle estruct : values) {
-				int cantTotal = estruct.getCantidadPorAlummo() * 2 + estruct.getCantidadPorProfesor(); // MODIFICAR PARA 30
+				int cantTotal = estruct.getCantidadPorAlummo() * 30 + estruct.getCantidadPorProfesor();
 				detalleCantidadesTotal
 						.add(new ArticuloCantidadDetalle(idTipoArticulo, cantTotal, estruct.getDetalle()));
 			}
 		}
-
-		System.out.println(detalleCantidadesTotal);
-
 		if (verificarArticulosDisponibles(detalleCantidadesTotal)) {
 			Clase nuevaClase = new Clase(this, tipoClase, emplazamiento, dateInicio, dateFin);
-			claseTest = nuevaClase;
 			clases.add(nuevaClase);
 			System.out.println("CLASE CREADA CON EXITO");
-			System.out.println(nuevaClase);
 		} else {
-			// LANZAR EXCEPCION
-			System.out.println("NO ALCANZAN LOS ARTICULOS");
+			// TODO excepcion
+			System.out.println("NO SON SUFICIENTES LOS ARTICULOS EN STOCK");
 		}
-
 	}
 
-	public void setArticulos(ArrayList<Articulo> articulos) {
-		this.articulos = articulos;
+	public void almacenarClase(Clase clase) {
+		if (clase.getTipo().getNombre() == "Yoga") {
+			var i = 0;
+			for (Clase claseOnline : clasesAlmacenadas) {
+				if (claseOnline.getTipo().getNombre() == "Yoga") {
+					i++;
+				}
+			}
+			if (i == 10) {
+				for (Clase claseOnline : clasesAlmacenadas) {
+					if (claseOnline.getTipo().getNombre() == "Yoga") {
+						clasesAlmacenadas.remove(clasesAlmacenadas.indexOf(claseOnline));
+						break;
+					}
+				}
+			}
+			clasesAlmacenadas.add(clase);
+		}
+		if (clase.getTipo().getNombre() == "Gimnasia Postural") {
+			var i = 0;
+			for (Clase claseOnline : clasesAlmacenadas) {
+				if (claseOnline.getTipo().getNombre() == "Gimnasia Postural") {
+					i++;
+				}
+			}
+			if (i == 15) {
+				for (Clase claseOnline : clasesAlmacenadas) {
+					if (claseOnline.getTipo().getNombre() == "Gimnasia Postural") {
+						clasesAlmacenadas.remove(clasesAlmacenadas.indexOf(claseOnline));
+						break;
+					}
+				}
+			}
+			clasesAlmacenadas.add(clase);
+		}
+		clasesAlmacenadas.add(clase);
 	}
 
 	// READY
@@ -68,7 +97,7 @@ public class Sede {
 			int cantidadNecesaria = articuloCantidadDetalle.getCantidadTotal();
 			for (Articulo item : articulos) {
 				if (item.getIdTipoArticulo() == articuloCantidadDetalle.getIdTipoArticulo()
-						&& item.getDescripcion() == articuloCantidadDetalle.getDetalle()) {
+						&& item.getDescripcion() == articuloCantidadDetalle.getDetalle() && !item.isDesgastado()) {
 					cantidadNecesaria--;
 				}
 				if (cantidadNecesaria == 0) {

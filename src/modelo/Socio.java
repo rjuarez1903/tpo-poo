@@ -1,11 +1,13 @@
 package modelo;
 
+import java.util.ArrayList;
 
 public class Socio extends Usuario {
 	
 	private Nivel nivel;
 	private boolean isActive;
-
+	private ArrayList<Clase> clasesInscriptas = new ArrayList<Clase>();
+	
 	public Socio(String nombre, String apellido, String dni, Nivel nivel) {
 		super(nombre, apellido, dni);
 		this.nivel = nivel;

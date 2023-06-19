@@ -15,11 +15,25 @@ public abstract class Usuario {
 	public boolean soySoporteTecnico() {
 		return false;
 	}
+
 	public boolean soyAdministrativo() {
 		return false;
 	}
+
 	public boolean soySocio() {
 		return false;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public String getDni() {
+		return dni;
 	}
 
 }

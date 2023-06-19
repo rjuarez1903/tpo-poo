@@ -1,6 +1,5 @@
 package modelo;
 
-
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -14,6 +13,7 @@ public class Articulo {
 	private int numeroUsos;
 	private Date fechaDeFabricacion;
 	private TipoAmortizacion tipoAmortizacion;
+	private double costoPorUso;
 
 	public Articulo(TipoArticulo tipoArticulo, String descripcion, double precio) {
 		this.desgastado = false;
@@ -25,6 +25,7 @@ public class Articulo {
 		this.fechaDeFabricacion = new Date();
 		this.tipoAmortizacion = tipoArticulo.getTipoAmortizacion();
 		this.descripcion = descripcion;
+		this.costoPorUso = precio / tipoArticulo.getNumeroUsos();
 		Articulo.contador++;
 	}
 
@@ -68,7 +69,9 @@ public class Articulo {
 		return fechaDeFabricacion;
 	}
 
-	
+	public double getCostoPorUso() {
+		return costoPorUso;
+	}
 
 	@Override
 	public String toString() {
@@ -83,9 +86,10 @@ public class Articulo {
 	}
 
 	public void usarArticulo() {
-
+		numeroUsos--;
+		if (numeroUsos == 0) {
+			desgastado = true;
+		}
 	}
-
-
 
 }

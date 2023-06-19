@@ -1,5 +1,11 @@
 package modelo;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Profesor {
@@ -7,13 +13,60 @@ public class Profesor {
 	private String apellido;
 	private List<Clase> clases;
 	private double sueldo;
-	
+
 	public Profesor(String nombre, String apellido, double sueldo) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.sueldo = sueldo;
 	}
-	
+
+	public boolean aptoParaDictarClase(LocalDateTime horaInicio, LocalDateTime horaFinal) {
+		ArrayList<Clase> clasesDelDia = new ArrayList<Clase>();
+		for (Clase clase : clases) {
+			if (clase.getHoraFinal().getDayOfMonth() == horaFinal.getDayOfMonth()) {
+				clasesDelDia.add(clase);
+			}
+		}
+		if (clasesDelDia.size() == 0) {
+			return true;
+		} else if (clasesDelDia.size() == 1) {
+			Clase clase = clasesDelDia.get(0);
+			if (clase.getHoraFinal().isBefore(horaInicio)) {
+				var duracion = Duration.between(clase.getHoraFinal(), horaInicio).toHours();
+				if (duracion >= 3) {
+					return true;
+				}
+			} else {
+				var duracion = Duration.between(horaFinal, clase.getHoraInicio()).toHours();
+				if (duracion >= 3) {
+					return true;
+				}
+			}
+		} else if (clasesDelDia.size() == 2) {
+			Clase[] claseDelDiaArray = clasesDelDia.toArray(new Clase[clasesDelDia.size()]);
+			Arrays.sort(claseDelDiaArray, Comparator.comparing(Clase::getHoraInicio));
+			if (claseDelDiaArray[0].getHoraInicio().isAfter(horaFinal)) {
+				var duracion = Duration.between(claseDelDiaArray[0].getHoraInicio(), horaFinal).toHours();
+				if (duracion >= 3) {
+					return true;
+				}
+			} else if (claseDelDiaArray[0].getHoraFinal().isBefore(horaInicio)
+					&& claseDelDiaArray[1].getHoraInicio().isAfter(horaFinal)) {
+				var duracion1 = Duration.between(claseDelDiaArray[0].getHoraFinal(), horaInicio).toHours();
+				var duracion2 = Duration.between(claseDelDiaArray[1].getHoraInicio(), horaFinal).toHours();
+				if (duracion1 >= 3 && duracion2 >= 3) {
+					return true;
+				}
+			} else {
+				var duracion = Duration.between(claseDelDiaArray[1].getHoraFinal(), horaInicio).toHours();
+				if (duracion >= 3) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public void addClase(Clase clase) {
 		clases.add(clase);
 	}
@@ -41,6 +94,5 @@ public class Profesor {
 	public void setSueldo(double sueldo) {
 		this.sueldo = sueldo;
 	}
-	
-	
+
 }

@@ -13,7 +13,7 @@ public class Clase {
 	private ArrayList<Socio> sociosInscriptos = new ArrayList<>();
 	private ArrayList<Articulo> articulosDeClase = new ArrayList<>();
 	private EstadoClase estado;
-	private TipoClase tipo;
+	private TipoClase tipoClase;
 	private Profesor profesor;
 	private Emplazamiento lugar;
 	private LocalDateTime horaInicio;
@@ -23,22 +23,39 @@ public class Clase {
 	public Clase(Sede sede, TipoClase tipo, Emplazamiento lugar, LocalDateTime horaInicio, LocalDateTime horaFinal) {
 		this.sede = sede;
 		this.estado = EstadoClase.AGENDADA;
-		this.tipo = tipo;
+		this.tipoClase = tipo;
 		this.lugar = lugar;
 		this.horaInicio = horaInicio;
 		this.horaFinal = horaFinal;
 	}
 
-	public void utilizarArticulos() {
-		// TODO
+	public void finalizarClase() {
+		if (profesor == null) {
+			return;
+			// TODO Excepcion - la clase no cuenta con profesor asignado
+		}
+		for (Articulo articulo : articulosDeClase) { // Amortizar articulos
+			articulo.usarArticulo();
+		}
+		if (this.tipoClase.esOnline()) { // Almacenar clase si corresponde
+			sede.almacenarClase(this);
+		}
+		this.estado = EstadoClase.FINALIZADA;
+	}
+
+	public void asignarProfesor(Profesor profesor) {
+		if (profesor.aptoParaDictarClase(horaInicio, horaFinal)) {
+			this.profesor = profesor;
+		} else {
+			// TODO -Excepcion profesor no apto
+		}
 	}
 
 	private void calcularCostos() {
 		var duracion = Duration.between(horaInicio, horaFinal).toHours();
-
-		double costoEmplazamiento;
-		double costoAmortizacion;
-
+		double costoEmplazamiento = 0;
+		double costoAmortizacion = 0;
+		double costoProfesor = 0;
 		if (lugar.getTipoEmplazamiento() == TipoEmplazamiento.SALON) {
 			costoEmplazamiento = sede.getPrecioAlquiler() / 300;
 		} else if (lugar.getTipoEmplazamiento() == TipoEmplazamiento.PILETA) {
@@ -46,33 +63,57 @@ public class Clase {
 		} else {
 			costoEmplazamiento = lugar.getSuperficie() * duracion * 500;
 		}
-
+		for (Articulo articulo : articulosDeClase) { // TODO
+			if (articulo.getTipoAmortizacion() == TipoAmortizacion.USO) {
+				costoAmortizacion = costoAmortizacion + articulo.getCostoPorUso();
+			} else {
+				var aux = (duracion / 8) * articulo.getCostoPorUso();
+				costoAmortizacion = costoAmortizacion + aux;
+			}
+		}
+		costoProfesor = profesor.getSueldo() / 90;
+		costoClase = costoAmortizacion + costoEmplazamiento + costoProfesor;
 	}
 
 	private void calcularIngresos() {
-
+		double ingresos = 0;
+		for (Socio socio : sociosInscriptos) {
+			ingresos = ingresos + (socio.getNivel().getPrecioMembresia() / 30);
+		}
+		ingresoClase = ingresos;
 	}
 
-	public double calcularRentabilidad() {
-		// TODO
-		return 0;
+	public void calcularRentabilidad() {
+		if (ingresoClase > costoClase) {
+			cambiarEstado(EstadoClase.CONFIRMADA);
+			profesor.addClase(this);
+		}
 	}
 
 	public void inscribirse(Usuario socio) {
-		if (sociosInscriptos.size() <= 30) {
+		if (sociosInscriptos.size() < 30 && lugar.getSuperficie() / (sociosInscriptos.size() + 1) > 2) {
 			sociosInscriptos.add((Socio) socio);
 			incorporarArticulos();
+			calcularCostos();
+			calcularIngresos();
+			calcularRentabilidad();
 		} else {
-			// LANZAR EXPCEPCION
+			// TODO
 		}
-		System.out.println(this);
+	}
+
+	public void cambiarEstado(EstadoClase nuevoEstado) {
+		if (nuevoEstado != EstadoClase.FINALIZADA) {
+			this.estado = nuevoEstado;
+		} else {
+			finalizarClase();
+		}
 	}
 
 	private void incorporarArticulos() {
 		ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal = new ArrayList<>();
-		HashMap<Integer, List<CantidadDetalle>> mapa = tipo.getCantidadArticulo();
+		HashMap<Integer, List<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
 		ArrayList<Articulo> articulosClaseAux = new ArrayList<>();
-
 		for (Entry<Integer, List<CantidadDetalle>> entry : mapa.entrySet()) {
 			Integer idTipoArticulo = entry.getKey();
 			List<CantidadDetalle> values = entry.getValue();
@@ -83,12 +124,11 @@ public class Clase {
 						.add(new ArticuloCantidadDetalle(idTipoArticulo, cantTotal, estruct.getDetalle()));
 			}
 		}
-
 		for (ArticuloCantidadDetalle articuloCantidadDetalle : detalleCantidadesTotal) {
 			int cantidadNecesaria = articuloCantidadDetalle.getCantidadTotal();
 			for (Articulo item : sede.getArticulos()) {
 				if (item.getIdTipoArticulo() == articuloCantidadDetalle.getIdTipoArticulo()
-						&& item.getDescripcion() == articuloCantidadDetalle.getDetalle()) {
+						&& item.getDescripcion() == articuloCantidadDetalle.getDetalle() && !item.isDesgastado()) {
 					articulosClaseAux.add(item);
 					cantidadNecesaria--;
 				}
@@ -110,10 +150,10 @@ public class Clase {
 
 	@Override
 	public String toString() {
-		return "Clase [sociosInscriptos=" + sociosInscriptos + ", articulosDeClase="
-				+ articulosDeClase + ", estado=" + estado + ", tipo=" + tipo + ", profesor=" + profesor + ", lugar="
-				+ lugar + ", horaInicio=" + horaInicio + ", horaFinal=" + horaFinal + ", costoClase=" + costoClase
-				+ ", ingresoClase=" + ingresoClase + "]";
+		return "Clase [sociosInscriptos=" + sociosInscriptos + ", articulosDeClase=" + articulosDeClase + ", estado="
+				+ estado + ", tipo=" + tipoClase + ", profesor=" + profesor + ", lugar=" + lugar + ", horaInicio="
+				+ horaInicio + ", horaFinal=" + horaFinal + ", costoClase=" + costoClase + ", ingresoClase="
+				+ ingresoClase + "]";
 	}
 
 	public EstadoClase getEstado() {
@@ -121,7 +161,7 @@ public class Clase {
 	}
 
 	public TipoClase getTipo() {
-		return tipo;
+		return tipoClase;
 	}
 
 	public Profesor getProfesor() {
