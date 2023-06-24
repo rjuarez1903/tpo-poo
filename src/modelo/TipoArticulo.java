@@ -2,7 +2,8 @@ package modelo;
 
 import java.time.LocalDate;
 
-import vista.ArticuloView;
+import vista. ArticuloView;
+import vista.TipoArticuloView;
 
 public class TipoArticulo {
 	private static int contador = 0;
@@ -24,8 +25,8 @@ public class TipoArticulo {
 		contador++;
 	}
 
-	public ArticuloView toView() {
-		return new ArticuloView(idTipoArticulo, nombre, precio, numeroUsos);
+	public TipoArticuloView toView() {
+		return new TipoArticuloView(idTipoArticulo, nombre, precio, numeroUsos);
 	}
 
 	public String getDescripcion() {

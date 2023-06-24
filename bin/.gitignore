@@ -1,5 +1,2 @@
-/module-info.class
-/.gitignore
-/modelo/
-/vista/
-/controlador/
+/UI/
+/comm/

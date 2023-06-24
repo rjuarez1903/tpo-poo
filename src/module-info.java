@@ -6,4 +6,6 @@
  *
  */
 module TPO_POO_GRUPO4 {
+	requires java.desktop;
+	requires java.logging;
 }
