@@ -30,12 +30,10 @@ public class Clase {
 	}
 
 	public void finalizarClase() {
-		if (profesor == null) {
-			return;
-			// TODO Excepcion - la clase no cuenta con profesor asignado
-		}
 		for (Articulo articulo : articulosDeClase) { // Amortizar articulos
-			articulo.usarArticulo();
+			if (articulo.getTipoAmortizacion() == TipoAmortizacion.USO) {
+				articulo.usarArticulo();
+			}
 		}
 		if (this.tipoClase.esOnline()) { // Almacenar clase si corresponde
 			sede.almacenarClase(this);
@@ -46,8 +44,11 @@ public class Clase {
 	public void asignarProfesor(Profesor profesor) {
 		if (profesor.aptoParaDictarClase(horaInicio, horaFinal)) {
 			this.profesor = profesor;
+			System.out.println("Asignado");
+			profesor.addClase(this);
 		} else {
 			// TODO -Excepcion profesor no apto
+			System.out.println("No se puede asignar");
 		}
 	}
 
@@ -91,14 +92,15 @@ public class Clase {
 	}
 
 	public void inscribirse(Usuario socio) {
-		if (sociosInscriptos.size() < 30 && lugar.getSuperficie() / (sociosInscriptos.size() + 1) > 2) {
+		if (sociosInscriptos.size() < 30 && lugar.getSuperficie() / (sociosInscriptos.size() + 1) > 2
+				&& profesor != null) {
 			sociosInscriptos.add((Socio) socio);
 			incorporarArticulos();
 			calcularCostos();
 			calcularIngresos();
 			calcularRentabilidad();
 		} else {
-			// TODO
+			// TODO - Excecpcion
 		}
 	}
 

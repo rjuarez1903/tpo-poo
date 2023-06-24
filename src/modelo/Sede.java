@@ -13,7 +13,7 @@ public class Sede {
 	private Nivel nivel;
 	private ArrayList<Articulo> articulos;
 	private ArrayList<Clase> clases = new ArrayList<>();
-	private ArrayList<Clase> clasesAlmacenadas = new ArrayList<>(); // DB Streaming - TODO
+	private ArrayList<Clase> clasesAlmacenadas = new ArrayList<>();
 	private ArrayList<Emplazamiento> emplazamientos = new ArrayList<>();
 
 	public Sede(String barrio, double precioAlquiler, Nivel nivel) {
@@ -26,6 +26,14 @@ public class Sede {
 	public void incorporarArticulo(TipoArticulo tipoArticulo, String descripcion, double precio, int cantidad) {
 		for (int i = cantidad; i > 0; i--) {
 			articulos.add(new Articulo(tipoArticulo, descripcion, precio));
+		}
+	}
+
+	public void desgastarArticulosFinalDia() { // Funcion que se ejecuta a las 00:00 de cada dia
+		for (Articulo articulo : articulos) {
+			if (articulo.getTipoAmortizacion() == TipoAmortizacion.FECHA_DE_FABRICACION) {
+				articulo.usarArticulo();
+			}
 		}
 	}
 

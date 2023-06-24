@@ -1,6 +1,7 @@
 package modelo;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import java.util.List;
 public class Profesor {
 	private String nombre;
 	private String apellido;
-	private List<Clase> clases;
+	private List<Clase> clases = new ArrayList<Clase>();
 	private double sueldo;
 
 	public Profesor(String nombre, String apellido, double sueldo) {
@@ -22,8 +23,10 @@ public class Profesor {
 
 	public boolean aptoParaDictarClase(LocalDateTime horaInicio, LocalDateTime horaFinal) {
 		ArrayList<Clase> clasesDelDia = new ArrayList<Clase>();
+		LocalDate horaFinalLocalDate = horaFinal.toLocalDate();
+
 		for (Clase clase : clases) {
-			if (clase.getHoraFinal().getDayOfMonth() == horaFinal.getDayOfMonth()) {
+			if (clase.getHoraFinal().toLocalDate().isEqual(horaFinalLocalDate)) {
 				clasesDelDia.add(clase);
 			}
 		}
@@ -46,14 +49,14 @@ public class Profesor {
 			Clase[] claseDelDiaArray = clasesDelDia.toArray(new Clase[clasesDelDia.size()]);
 			Arrays.sort(claseDelDiaArray, Comparator.comparing(Clase::getHoraInicio));
 			if (claseDelDiaArray[0].getHoraInicio().isAfter(horaFinal)) {
-				var duracion = Duration.between(claseDelDiaArray[0].getHoraInicio(), horaFinal).toHours();
+				var duracion = Duration.between(horaFinal, claseDelDiaArray[0].getHoraInicio()).toHours();
 				if (duracion >= 3) {
 					return true;
 				}
 			} else if (claseDelDiaArray[0].getHoraFinal().isBefore(horaInicio)
 					&& claseDelDiaArray[1].getHoraInicio().isAfter(horaFinal)) {
 				var duracion1 = Duration.between(claseDelDiaArray[0].getHoraFinal(), horaInicio).toHours();
-				var duracion2 = Duration.between(claseDelDiaArray[1].getHoraInicio(), horaFinal).toHours();
+				var duracion2 = Duration.between(horaFinal, claseDelDiaArray[1].getHoraInicio()).toHours();
 				if (duracion1 >= 3 && duracion2 >= 3) {
 					return true;
 				}
