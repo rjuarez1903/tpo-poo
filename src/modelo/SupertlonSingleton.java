@@ -8,6 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import excepciones.ArticulosInsuficientesException;
+import excepciones.InscripcionNoDisponibleException;
+import excepciones.ProfesorNoDisponibleException;
+import excepciones.SedeExistenteException;
+import excepciones.UsuarioDuplicadoException;
+import excepciones.UsuarioInexistenteException;
+
 public class SupertlonSingleton {
 	private static SupertlonSingleton instancia;
 	private ArrayList<Usuario> usuarios;
@@ -31,29 +38,32 @@ public class SupertlonSingleton {
 	}
 
 	// Acceso - READY
-	public void ingresar(String dni) {
+	public void ingresar(String dni) throws UsuarioInexistenteException {
 		for (Usuario usuario : usuarios) {
-			if (usuario.dni == dni) {
+			if (usuario.dni.equals(dni)) {
 				UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 				usuarioSingleton.setUsuarioActual(usuario);
+				System.out.println("Ingresado con exito!");
+				return;
 			}
 		}
+		throw new UsuarioInexistenteException("No existe usuario con el DNI ingresado: " + dni);
 	}
 
 	// METODOS SOPORTE TECNICO
 
-	private void agregarUsuario(Usuario nuevoUsuario) {
+	public void agregarUsuario(Usuario nuevoUsuario) throws UsuarioDuplicadoException {
 		for (Usuario usuario : usuarios) {
-			if (usuario.dni == nuevoUsuario.getDni()) {
-				return;
-				// Lanzar excepcion
+			if (usuario.dni.equals(nuevoUsuario.getDni())) {
+				throw new UsuarioDuplicadoException("El usuario ya existe en el sistema");
 			}
 		}
 		usuarios.add(nuevoUsuario);
 	}
 
 	// ready
-	public void crearAdministrativo(String nombre, String apellido, String dni, ArrayList<Sede> sedes) {
+	public void crearAdministrativo(String nombre, String apellido, String dni, ArrayList<Sede> sedes)
+			throws UsuarioDuplicadoException {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySoporteTecnico()) {
@@ -63,7 +73,7 @@ public class SupertlonSingleton {
 	}
 
 	// ready
-	public void crearSoporteTecnico(String nombre, String apellido, String dni) {
+	public void crearSoporteTecnico(String nombre, String apellido, String dni) throws UsuarioDuplicadoException {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySoporteTecnico()) {
@@ -73,7 +83,7 @@ public class SupertlonSingleton {
 	}
 
 	// ready
-	public void crearSocio(String nombre, String apellido, String dni, Nivel nivel) {
+	public void crearSocio(String nombre, String apellido, String dni, Nivel nivel) throws UsuarioDuplicadoException {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySoporteTecnico() || usuarioActual.soyAdministrativo()) {
@@ -83,17 +93,18 @@ public class SupertlonSingleton {
 	}
 
 	// ready
-	public void agregarSede(String barrio, Nivel nivel, double precioAlquiler) {
+	public void agregarSede(String barrio, Nivel nivel, double precioAlquiler) throws SedeExistenteException {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySoporteTecnico()) {
 			Sede nuevaSede = new Sede(barrio, precioAlquiler, nivel);
 			for (Sede sede : sedes) {
-				if (sede.getBarrio() == nuevaSede.getBarrio()) {
-					return;
-					// Lanzar excepcion Sede ya existe
+				if (sede.getBarrio().equals(nuevaSede.getBarrio())) {
+					throw new SedeExistenteException("Ya existe una sede para el barrio: " + barrio);
 				}
 			}
+			System.out.println("Sede creada con exito");
+			System.out.println(nuevaSede);
 			sedes.add(nuevaSede);
 		}
 	}
@@ -104,6 +115,7 @@ public class SupertlonSingleton {
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySoporteTecnico()) {
 			TipoArticulo nuevoTipoArticulo = new TipoArticulo(nombre, numeroUsos, tipoAmortizacion);
+			System.out.println(nuevoTipoArticulo);
 			tiposArticulos.add(nuevoTipoArticulo);
 		}
 	}
@@ -123,7 +135,7 @@ public class SupertlonSingleton {
 
 	// ready
 	public void agendarClase(TipoClase tipoClase, Sede sede, Emplazamiento emplazamiento, LocalDateTime dateInicio,
-			LocalDateTime dateFin) {
+			LocalDateTime dateFin) throws ArticulosInsuficientesException {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soyAdministrativo()) {
@@ -132,11 +144,10 @@ public class SupertlonSingleton {
 	}
 
 	// ready
-	public void asginarProfesor(Clase clase, Profesor profesor) {
+	public void asginarProfesor(Clase clase, Profesor profesor) throws ProfesorNoDisponibleException {
 		clase.asignarProfesor(profesor);
 	}
 
-	
 	// ready
 	public void cambiarEstadoClase(Clase clase, EstadoClase nuevoEstado) {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
@@ -146,6 +157,14 @@ public class SupertlonSingleton {
 		}
 	}
 
+	public void agregarEmplazamiento(Sede sede, TipoEmplazamiento tipoEmplazamiento, double superficie) {
+		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
+		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
+		if (usuarioActual.soyAdministrativo()) {
+			sede.agregarEmplazamiento(new Emplazamiento(tipoEmplazamiento, superficie));
+		}
+	}
+	
 	// ready
 	public void incorporarArticulos(Sede sede, TipoArticulo tipoArticulo, String descripcion, double precio,
 			int cantidad) {
@@ -169,7 +188,7 @@ public class SupertlonSingleton {
 
 	// METODOS DE USUARIO
 
-	public void inscribirseClase(Clase clase) {
+	public void inscribirseClase(Clase clase) throws InscripcionNoDisponibleException {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySocio()) { // Verifica que el usuario es un socio
@@ -177,10 +196,20 @@ public class SupertlonSingleton {
 		}
 	}
 
+	// METODOS PARA MANEJO DE INFO EN VISTAS
+	
+	
+	
+	
 	// Getters and Setter
+	
 
 	public ArrayList<Usuario> getUsuarios() {
 		return usuarios;
+	}
+
+	public void setSedes(ArrayList<Sede> sedes) { //eliminar
+		this.sedes = sedes;
 	}
 
 	public ArrayList<TipoClase> getTiposClase() {
@@ -193,10 +222,6 @@ public class SupertlonSingleton {
 
 	public ArrayList<Sede> getSedes() {
 		return sedes;
-	}
-
-	public void addTipoClase(TipoClase x) { // BORRAR
-		tiposClases.add(x);
 	}
 
 }

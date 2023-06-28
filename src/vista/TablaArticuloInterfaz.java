@@ -13,12 +13,12 @@ public class TablaArticuloInterfaz extends JFrame {
 
 	public TablaArticuloInterfaz(ArrayList<Articulo> articulos) {
 		ArrayList<Articulo> articulosAux = new ArrayList<>();
-		
+
 		for (Articulo articulo : articulos) {
 			boolean flag = true;
 			for (Articulo articulo2 : articulosAux) {
-				if (articulo.getNombre() == articulo2.getNombre()
-						&& articulo.getDescripcion() == articulo2.getDescripcion()) {
+				if (articulo.getNombre().equals(articulo2.getNombre())
+						&& articulo.getDescripcion().equals(articulo2.getDescripcion())) {
 					flag = false;
 				}
 			}

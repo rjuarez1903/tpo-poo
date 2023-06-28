@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import excepciones.ArticulosInsuficientesException;
+
 public class Sede {
 	private String barrio;
 	private double precioAlquiler;
@@ -22,6 +24,10 @@ public class Sede {
 		this.nivel = nivel;
 	}
 
+	public void agregarEmplazamiento(Emplazamiento emplazamiento) {
+		emplazamientos.add(emplazamiento);
+	}
+
 	// ready
 	public void incorporarArticulo(TipoArticulo tipoArticulo, String descripcion, double precio, int cantidad) {
 		for (int i = cantidad; i > 0; i--) {
@@ -29,6 +35,7 @@ public class Sede {
 		}
 	}
 
+	// ready
 	public void desgastarArticulosFinalDia() { // Funcion que se ejecuta a las 00:00 de cada dia
 		for (Articulo articulo : articulos) {
 			if (articulo.getTipoAmortizacion() == TipoAmortizacion.FECHA_DE_FABRICACION) {
@@ -39,7 +46,7 @@ public class Sede {
 
 	// ready
 	public void agendarClase(TipoClase tipoClase, Emplazamiento emplazamiento, LocalDateTime dateInicio,
-			LocalDateTime dateFin) {
+			LocalDateTime dateFin) throws ArticulosInsuficientesException {
 		ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal = new ArrayList<>();
 		HashMap<Integer, List<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
 		for (Entry<Integer, List<CantidadDetalle>> entry : mapa.entrySet()) {
@@ -54,13 +61,12 @@ public class Sede {
 		if (verificarArticulosDisponibles(detalleCantidadesTotal)) {
 			Clase nuevaClase = new Clase(this, tipoClase, emplazamiento, dateInicio, dateFin);
 			clases.add(nuevaClase);
-			System.out.println("CLASE CREADA CON EXITO");
 		} else {
-			// TODO excepcion
-			System.out.println("NO SON SUFICIENTES LOS ARTICULOS EN STOCK");
+			throw new ArticulosInsuficientesException("No hay articulos suficientes en stock para agendar la clase");
 		}
 	}
 
+	// ready
 	public void almacenarClase(Clase clase) {
 		if (clase.getTipo().getNombre() == "Yoga") {
 			var i = 0;

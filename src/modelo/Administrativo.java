@@ -3,6 +3,12 @@ package modelo;
 import java.util.List;
 
 public class Administrativo extends Usuario {
+	@Override
+	public String toString() {
+		return "Administrativo [sedes=" + sedes + ", nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni
+				+ "]";
+	}
+
 	private List<Sede> sedes;
 
 	public Administrativo(String nombre, String apellido, String numeroDeDocumento, List<Sede> sedes) {

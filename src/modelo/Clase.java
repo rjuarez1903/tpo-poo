@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import excepciones.InscripcionNoDisponibleException;
+import excepciones.ProfesorNoDisponibleException;
+
 public class Clase {
 
 	private Sede sede;
@@ -41,14 +44,13 @@ public class Clase {
 		this.estado = EstadoClase.FINALIZADA;
 	}
 
-	public void asignarProfesor(Profesor profesor) {
+	public void asignarProfesor(Profesor profesor) throws ProfesorNoDisponibleException {
 		if (profesor.aptoParaDictarClase(horaInicio, horaFinal)) {
 			this.profesor = profesor;
-			System.out.println("Asignado");
 			profesor.addClase(this);
 		} else {
-			// TODO -Excepcion profesor no apto
-			System.out.println("No se puede asignar");
+			throw new ProfesorNoDisponibleException(
+					"Profesor no cuenta con disponibilidad horaria para dictar la clase");
 		}
 	}
 
@@ -91,17 +93,22 @@ public class Clase {
 		}
 	}
 
-	public void inscribirse(Usuario socio) {
-		if (sociosInscriptos.size() < 30 && lugar.getSuperficie() / (sociosInscriptos.size() + 1) > 2
-				&& profesor != null) {
-			sociosInscriptos.add((Socio) socio);
-			incorporarArticulos();
-			calcularCostos();
-			calcularIngresos();
-			calcularRentabilidad();
-		} else {
-			// TODO - Excecpcion
+	public void inscribirse(Usuario socio) throws InscripcionNoDisponibleException {
+		if (sociosInscriptos.size() >= 30) {
+			throw new InscripcionNoDisponibleException("La clase alcanzó el máximo de socios inscriptos");
 		}
+		if (lugar.getSuperficie() / (sociosInscriptos.size() + 1) < 2) {
+			throw new InscripcionNoDisponibleException("La clase no cuenta con el espacio disponible para inscribirse");
+		}
+		if (profesor == null) {
+			throw new InscripcionNoDisponibleException("La clase no cuenta con profesor agendado al momento");
+		}
+		sociosInscriptos.add((Socio) socio);
+		incorporarArticulos();
+		calcularCostos();
+		calcularIngresos();
+		calcularRentabilidad();
+
 	}
 
 	public void cambiarEstado(EstadoClase nuevoEstado) {

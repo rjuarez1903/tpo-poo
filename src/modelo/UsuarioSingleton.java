@@ -5,9 +5,7 @@ public class UsuarioSingleton {
 	private Usuario usuarioActual;
 	private static UsuarioSingleton instancia;
 
-	private UsuarioSingleton() {
-		this.usuarioActual = new SoporteTecnico("Admin", "Admin", "1234");
-	};
+	private UsuarioSingleton() {};
 
 	public static UsuarioSingleton getInstance() {
 		if (instancia == null) {

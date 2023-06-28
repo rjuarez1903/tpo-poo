@@ -29,6 +29,8 @@ public class Articulo {
 		Articulo.contador++;
 	}
 
+	
+
 	public int getIdArticulo() {
 		return idArticulo;
 	}

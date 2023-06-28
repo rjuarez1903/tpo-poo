@@ -17,6 +17,12 @@ public class TipoArticulo {
 		contador++;
 	}
 
+	@Override
+	public String toString() {
+		return "TipoArticulo [idTipoArticulo=" + idTipoArticulo + ", nombre=" + nombre + ", numeroUsos=" + numeroUsos
+				+ ", tipoAmortizacion=" + tipoAmortizacion + "]";
+	}
+
 	public String getNombre() {
 		return nombre;
 	}

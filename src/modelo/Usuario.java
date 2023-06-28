@@ -12,6 +12,11 @@ public abstract class Usuario {
 		this.dni = dni;
 	}
 
+	@Override
+	public String toString() {
+		return "Usuario [nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + "]";
+	}
+
 	public boolean soySoporteTecnico() {
 		return false;
 	}
