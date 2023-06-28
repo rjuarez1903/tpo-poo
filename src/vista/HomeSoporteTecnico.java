@@ -13,32 +13,62 @@ import modelo.SupertlonSingleton;
 public class HomeSoporteTecnico extends JPanel {
 
 	public HomeSoporteTecnico() {
-		this.setLayout(new BorderLayout());
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setLayout(new GridLayout(4, 1, 2, 2));
+		setLayout(new GridBagLayout());
+        setBackground(Color.decode("#14213d"));
 
-		JButton tipoArticuloMenu = new JButton("Agregar Tipo Articulo");
-		JButton sedeMenu = new JButton("Agregar Sede");
-		JButton tipoClaseManu = new JButton("Crear Tipo Clase");
-		JButton administrativoMenu = new JButton("Crear Administrativo");
-		JButton socioMenu = new JButton("Crear Socio");
-		JButton soporteTecnicoMenu = new JButton("Crear Soporte Tecnico");
-		JButton logoutButton = new JButton("Cerrar sesión");
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.decode("#14213d"));
 
-		JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
-		buttonPanel.add(tipoArticuloMenu);
-		buttonPanel.add(sedeMenu);
-		buttonPanel.add(tipoClaseManu);
-		buttonPanel.add(administrativoMenu);
-		buttonPanel.add(socioMenu);
-		buttonPanel.add(soporteTecnicoMenu);
+        JButton tipoArticuloMenu = LibUI.crearBotonStandar("Agregar Tipo Articulo");
+        JButton sedeMenu = LibUI.crearBotonStandar("Agregar Sede");
+        JButton tipoClaseMenu = LibUI.crearBotonStandar("Crear Tipo Clase");
+        JButton administrativoMenu = LibUI.crearBotonStandar("Crear Administrativo");
+        JButton socioMenu = LibUI.crearBotonStandar("Crear Socio");
+        JButton soporteTecnicoMenu = LibUI.crearBotonStandar("Crear Soporte Tecnico");
+        JButton logoutButton = LibUI.crearBotonStandar("Cerrar sesión");
 
-		panel.add(buttonPanel, BorderLayout.CENTER);
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel.setOpaque(false);
 
-		panel.add(logoutButton, BorderLayout.SOUTH);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        buttonPanel.add(tipoArticuloMenu, gbc);
 
-		this.add(panel, BorderLayout.CENTER);
+        gbc.gridx = 1;
+        buttonPanel.add(sedeMenu, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        buttonPanel.add(tipoClaseMenu, gbc);
+
+        gbc.gridx = 1;
+        buttonPanel.add(administrativoMenu, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        buttonPanel.add(socioMenu, gbc);
+
+        gbc.gridx = 1;
+        buttonPanel.add(soporteTecnicoMenu, gbc);
+
+        panel.add(buttonPanel, BorderLayout.CENTER);
+
+        panel.add(logoutButton, BorderLayout.SOUTH);
+
+        GridBagConstraints gbcPanel = new GridBagConstraints();
+        gbcPanel.gridx = 0;
+        gbcPanel.gridy = 0;
+        gbcPanel.weightx = 1.0;
+        gbcPanel.weighty = 1.0;
+        gbcPanel.anchor = GridBagConstraints.CENTER;
+        add(panel, gbcPanel);
+
+        UIManager.put("Button.background", Color.decode("#fca311"));
+        UIManager.put("Button.foreground", Color.decode("#14213d"));
+        UIManager.put("Button.font", new Font("Dubai", Font.BOLD, 14));
 		sedeMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
@@ -54,7 +84,7 @@ public class HomeSoporteTecnico extends JPanel {
 			}
 		});
 
-		tipoClaseManu.addActionListener(new ActionListener() {
+		tipoClaseMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
 				windowManager.switchWindow(new CreacionTipoClase());
@@ -90,5 +120,6 @@ public class HomeSoporteTecnico extends JPanel {
 		});
 
 	}
+	
 
 }

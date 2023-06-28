@@ -18,8 +18,7 @@ public class WindowManagerSingleton {
 		Container contentPane = frame.getContentPane();
 		contentPane.add(buttonPanel, BorderLayout.NORTH);
 
-
-		frame.setSize(480, 300);
+		frame.setSize(800, 500);
 		frame.setVisible(true);
 	}
 
@@ -38,7 +37,6 @@ public class WindowManagerSingleton {
 			instancia = new WindowManagerSingleton();
 		}
 		return instancia;
-
 	}
 
 }

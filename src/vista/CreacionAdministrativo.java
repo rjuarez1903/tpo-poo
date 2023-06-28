@@ -1,7 +1,14 @@
 package vista;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -9,6 +16,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -17,6 +25,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -36,35 +48,34 @@ public class CreacionAdministrativo extends JPanel {
 
 	public CreacionAdministrativo(ArrayList<Sede> sedes) {
 
-		JPanel panel = new JPanel();
-		JPanel panel2 = new JPanel(new GridLayout(3, 2));
+		setLayout(new GridLayout(1, 2));
 
-		JLabel label1 = new JLabel("Nombre:");
-		JLabel label2 = new JLabel("Apellido:");
-		JLabel label3 = new JLabel("DNI:");
+		JPanel formPanel = new JPanel();
+		formPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-		JTextField textField1 = new JTextField();
-		JTextField textField2 = new JTextField();
-		JTextField textField3 = new JTextField();
+		JLabel label1 = LibUI.crearLabelStandar("Nombre");
+		JLabel label2 = LibUI.crearLabelStandar("Apellido");
+		JLabel label3 = LibUI.crearLabelStandar("DNI");
 
-		panel2.add(label1);
-		panel2.add(textField1);
-		panel2.add(label2);
-		panel2.add(textField2);
-		panel2.add(label3);
-		panel2.add(textField3);
+		JTextField textField1 = LibUI.crearTextfieldStandar();
+		JTextField textField2 = LibUI.crearTextfieldStandar();
+		JTextField textField3 = LibUI.crearTextfieldStandar();
 
-		JButton createButton = new JButton("Crear");
-		JButton volverButton = new JButton("Volver");
+		JButton createButton = LibUI.crearBotonStandar("Crear");
+		JButton volverButton = LibUI.crearBotonStandar("Volver");
 
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					new SoporteTecnicoControlador().crearAdministrativo(textField1.getText(), textField2.getText(),
 							textField3.getText(), sedesSeleccionadas);
-					JOptionPane.showMessageDialog(CreacionAdministrativo.this, "Administrativo dado de alta con éxito");
+					LibUI.mostrarMensajeOk(CreacionAdministrativo.this,
+							"Administrativo dado de alta con éxito");
 				} catch (UsuarioDuplicadoException e1) {
-					JOptionPane.showMessageDialog(CreacionAdministrativo.this, e1.getMessage());
+					LibUI.mostrarMensajeError(CreacionAdministrativo.this, e1.getMessage());
 				}
 			}
 		});
@@ -76,20 +87,82 @@ public class CreacionAdministrativo extends JPanel {
 			}
 		});
 
-		panel.add(createButton);
-		panel.add(volverButton);
-		createTable(sedes);
-		panel.add(scrollPane);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		formPanel.add(label1, gbc);
 
-		this.add(panel2);
-		this.add(panel);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		formPanel.add(textField1, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		formPanel.add(label2, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		formPanel.add(textField2, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		formPanel.add(label3, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		formPanel.add(textField3, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = 2;
+		gbc.insets = new Insets(20, 5, 5, 5);
+		formPanel.add(createButton, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		formPanel.add(volverButton, gbc);
+
+		createTable(sedes);
+
+		add(formPanel);
+		add(scrollPane);
 	}
 
 	private void createTable(ArrayList<Sede> sedes) {
 		SedeTableModel model = new SedeTableModel(sedes);
 		table = new JTable(model);
 		initializeCheckbox();
+		table.setRowHeight(25);
+		table.setFont(new Font("Dubai", Font.PLAIN, 14));
+		table.getTableHeader().setFont(new Font("Dubai", Font.BOLD, 14));
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+		// Customize table header
+		JTableHeader header = table.getTableHeader();
+		header.setBackground(new Color(240, 240, 240));
+		header.setOpaque(false);
+		header.setBorder(BorderFactory.createMatteBorder(1, 1, 0, 1, Color.GRAY));
+		header.setPreferredSize(new Dimension(0, 30));
+
+		// Set custom cell renderer for center-aligned checkbox column
+		TableColumnModel columnModel = table.getColumnModel();
+		TableColumn column = columnModel.getColumn(2);
+		column.setCellRenderer(new CheckBoxRenderer());
+		column.setCellEditor(new CheckBoxEditor(checkBox));
+
+		// Set custom cell renderer for center-aligned text columns
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		columnModel.getColumn(0).setCellRenderer(centerRenderer);
+		columnModel.getColumn(1).setCellRenderer(centerRenderer);
+
+		// Set column widths
+		columnModel.getColumn(0).setPreferredWidth(200);
+		columnModel.getColumn(1).setPreferredWidth(100);
+		columnModel.getColumn(2).setPreferredWidth(80);
+
 		scrollPane = new JScrollPane(table);
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 	}
 
 	private void initializeCheckbox() {
@@ -215,4 +288,5 @@ class CheckBoxEditor extends AbstractCellEditor implements TableCellEditor, Item
 	public void itemStateChanged(ItemEvent e) {
 		super.fireEditingStopped();
 	}
+
 }

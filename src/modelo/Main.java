@@ -3,6 +3,7 @@ package modelo;
 import vista.Login;
 import vista.TablaArticuloInterfaz;
 
+import java.awt.GraphicsEnvironment;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public class Main {
 		sedes.add(new Sede("San Nicolas", 1000, Nivel.ORO));
 
 		supertlonSingleton.setSedes(sedes);
-
 
 		var usuario5 = new SoporteTecnico("Simon", "Gonzalez", "1");
 

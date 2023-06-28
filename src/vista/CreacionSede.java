@@ -15,34 +15,41 @@ public class CreacionSede extends JPanel {
 
 	public CreacionSede() {
 
-		JPanel panel = new JPanel(new GridLayout(4, 2));
+		this.setLayout(new BorderLayout());
 
-		JLabel label1 = new JLabel("Barrio:");
-		JLabel label2 = new JLabel("Nivel:");
-		JLabel label3 = new JLabel("Precio de Alquiler:");
+		this.setLayout(new GridBagLayout());
 
-		JTextField textField1 = new JTextField();
+		JPanel formPanel = new JPanel(new GridLayout(3, 2));
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+		JLabel label1 = LibUI.crearLabelStandar("Barrio");
+		JLabel label2 = LibUI.crearLabelStandar("Nivel");
+		JLabel label3 = LibUI.crearLabelStandar("Precio de Alquiler");
+
+		JTextField textField1 = LibUI.crearTextfieldStandar();
 		JComboBox<Nivel> comboBox = new JComboBox<>(Nivel.values());
-		JTextField textField3 = new JTextField();
+		JTextField textField3 = LibUI.crearTextfieldStandar();
 
-		panel.add(label1);
-		panel.add(textField1);
-		panel.add(label2);
-		panel.add(comboBox);
-		panel.add(label3);
-		panel.add(textField3);
+		formPanel.add(label1);
+		formPanel.add(textField1);
+		formPanel.add(label2);
+		formPanel.add(comboBox);
+		formPanel.add(label3);
+		formPanel.add(textField3);
 
-		JButton createButton = new JButton("Crear");
-		JButton volverButton = new JButton("Volver");
+		JButton createButton = LibUI.crearBotonStandar("Crear");
+		JButton volverButton = LibUI.crearBotonStandar("Volver");
 
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					new SoporteTecnicoControlador().agregarSede(textField1.getText(),
 							(Nivel) comboBox.getSelectedItem(), Double.parseDouble(textField3.getText()));
-					JOptionPane.showMessageDialog(CreacionSede.this, "Sede creada con éxito");
+					LibUI.mostrarMensajeOk(CreacionSede.this, "Sede creada con éxito");
 				} catch (SedeExistenteException e1) {
-					JOptionPane.showMessageDialog(CreacionSede.this, e1.getMessage());
+					LibUI.mostrarMensajeError(CreacionSede.this, e1.getMessage());
+				} catch (Exception e2) {
+					LibUI.mostrarMensajeError(CreacionSede.this, e2.getMessage());
 				}
 
 			}
@@ -55,10 +62,26 @@ public class CreacionSede extends JPanel {
 			}
 		});
 
-		panel.add(createButton);
-		panel.add(volverButton);
+		buttonPanel.add(createButton);
+		buttonPanel.add(volverButton);
 
-		this.add(panel);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weighty = 0.5;
+		this.add(Box.createVerticalGlue(), gbc);
+
+		gbc.gridy = 1;
+		gbc.weighty = 0;
+		this.add(formPanel, gbc);
+
+		gbc.gridy = 2;
+		gbc.weighty = 0.5;
+		this.add(Box.createVerticalGlue(), gbc);
+
+		gbc.gridy = 3;
+		gbc.weighty = 0;
+		this.add(buttonPanel, gbc);
 	}
 
 }

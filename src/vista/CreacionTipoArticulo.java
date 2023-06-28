@@ -12,25 +12,31 @@ public class CreacionTipoArticulo extends JPanel {
 
 	public CreacionTipoArticulo() {
 
-		JPanel panel = new JPanel(new GridLayout(4, 2));
+		setLayout(new GridBagLayout());
 
-		JLabel label1 = new JLabel("Nombre:");
-		JLabel label2 = new JLabel("Cantidad de usos/dias:");
-		JLabel label4 = new JLabel("Tipo Amortización:");
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-		JTextField textField1 = new JTextField();
-		JTextField textField2 = new JTextField();
+		JLabel label1 = LibUI.crearLabelStandar("Nombre");
+		JLabel label2 = LibUI.crearLabelStandar("Cantidad de usos/dias");
+		JLabel label4 = LibUI.crearLabelStandar("Tipo Amortización");
+
+		JTextField textField1 = LibUI.crearTextfieldStandar();
+		JTextField textField2 = LibUI.crearTextfieldStandar();
 		JComboBox<TipoAmortizacion> comboBox = new JComboBox<>(TipoAmortizacion.values());
 
-		panel.add(label1);
-		panel.add(textField1);
-		panel.add(label2);
-		panel.add(textField2);
-		panel.add(label4);
-		panel.add(comboBox);
+		add(label1, gbc);
+		add(textField1, gbc);
+		add(label2, gbc);
+		add(textField2, gbc);
+		add(label4, gbc);
+		add(comboBox, gbc);
 
-		JButton createButton = new JButton("Crear");
-		JButton volverButton = new JButton("Volver");
+		JPanel buttonPanel = new JPanel();
+
+		JButton createButton = LibUI.crearBotonStandar("Crear");
+		JButton volverButton = LibUI.crearBotonStandar("Volver");
 
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -38,10 +44,10 @@ public class CreacionTipoArticulo extends JPanel {
 				try {
 					new SoporteTecnicoControlador().agregarTipoArticulo(textField1.getText(),
 							Integer.parseInt(textField2.getText()), (TipoAmortizacion) comboBox.getSelectedItem());
-					JOptionPane.showMessageDialog(CreacionTipoArticulo.this, "Tipo de Articulo creado con éxito");
+					LibUI.mostrarMensajeOk(CreacionTipoArticulo.this, "Tipo de Articulo creado con éxito");
 				} catch (NumberFormatException e1) {
 					// TODO: handle exception
-					JOptionPane.showMessageDialog(CreacionTipoArticulo.this, "Ocurrió un error: " + e1.getMessage());
+					LibUI.mostrarMensajeError(CreacionTipoArticulo.this, "Ocurrió un error: " + e1.getMessage());
 				}
 			}
 		});
@@ -53,10 +59,10 @@ public class CreacionTipoArticulo extends JPanel {
 			}
 		});
 
-		panel.add(createButton);
-		panel.add(volverButton);
+		buttonPanel.add(createButton);
+		buttonPanel.add(volverButton);
 
-		this.add(panel);
+		add(buttonPanel, gbc);
 	}
 
 }

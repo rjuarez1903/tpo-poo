@@ -1,6 +1,9 @@
 package vista;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,38 +24,43 @@ public class CreacionSocio extends JPanel {
 
 	public CreacionSocio() {
 
-		JPanel panel = new JPanel(new GridLayout(4, 2));
+		setLayout(new GridBagLayout());
 
-		JLabel label1 = new JLabel("Nombre:");
-		JLabel label2 = new JLabel("Apellido:");
-		JLabel label3 = new JLabel("DNI:");
-		JLabel label4 = new JLabel("Nivel:");
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-		JTextField textField1 = new JTextField();
-		JTextField textField2 = new JTextField();
-		JTextField textField3 = new JTextField();
+		JLabel label1 = LibUI.crearLabelStandar("Nombre");
+		JLabel label2 = LibUI.crearLabelStandar("Apellido");
+		JLabel label3 = LibUI.crearLabelStandar("DNI");
+		JLabel label4 = LibUI.crearLabelStandar("Nivel");
+
+		JTextField textField1 = LibUI.crearTextfieldStandar();
+		JTextField textField2 = LibUI.crearTextfieldStandar();
+		JTextField textField3 = LibUI.crearTextfieldStandar();
 		JComboBox<Nivel> comboBox = new JComboBox<>(Nivel.values());
 
-		panel.add(label1);
-		panel.add(textField1);
-		panel.add(label2);
-		panel.add(textField2);
-		panel.add(label3);
-		panel.add(textField3);
-		panel.add(label4);
-		panel.add(comboBox);
+		add(label1, gbc);
+		add(textField1, gbc);
+		add(label2, gbc);
+		add(textField2, gbc);
+		add(label3, gbc);
+		add(textField3, gbc);
+		add(label4, gbc);
+		add(comboBox, gbc);
 
-		JButton createButton = new JButton("Crear");
-		JButton volverButton = new JButton("Volver");
+		JPanel buttonPanel = new JPanel();
+		JButton createButton = LibUI.crearBotonStandar("Crear");
+		JButton volverButton = LibUI.crearBotonStandar("Volver");
 
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					new SoporteTecnicoControlador().crearSocio(textField1.getText(), textField2.getText(),
 							textField3.getText(), (Nivel) comboBox.getSelectedItem());
-					JOptionPane.showMessageDialog(CreacionSocio.this, "Socio dado de alta con éxito");
+					LibUI.mostrarMensajeOk(CreacionSocio.this, "Socio dado de alta con éxito");
 				} catch (UsuarioDuplicadoException e1) {
-					JOptionPane.showMessageDialog(CreacionSocio.this, e1.getMessage());
+					LibUI.mostrarMensajeError(CreacionSocio.this, e1.getMessage());
 				}
 			}
 		});
@@ -64,10 +72,10 @@ public class CreacionSocio extends JPanel {
 			}
 		});
 
-		panel.add(createButton);
-		panel.add(volverButton);
+		buttonPanel.add(createButton);
+		buttonPanel.add(volverButton);
 
-		this.add(panel);
+		add(buttonPanel, gbc);
 	}
 
 }

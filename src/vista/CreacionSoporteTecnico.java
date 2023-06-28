@@ -1,6 +1,9 @@
 package vista;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,34 +23,40 @@ public class CreacionSoporteTecnico extends JPanel {
 
 	public CreacionSoporteTecnico() {
 
-		JPanel panel = new JPanel(new GridLayout(4, 2));
+		setLayout(new GridBagLayout());
 
-		JLabel label1 = new JLabel("Nombre:");
-		JLabel label2 = new JLabel("Apellido:");
-		JLabel label3 = new JLabel("DNI:");
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-		JTextField textField1 = new JTextField();
-		JTextField textField2 = new JTextField();
-		JTextField textField3 = new JTextField();
+		JLabel label1 = LibUI.crearLabelStandar("Nombre");
+		JLabel label2 = LibUI.crearLabelStandar("Apellido");
+		JLabel label3 = LibUI.crearLabelStandar("DNI");
 
-		panel.add(label1);
-		panel.add(textField1);
-		panel.add(label2);
-		panel.add(textField2);
-		panel.add(label3);
-		panel.add(textField3);
+		JTextField textField1 = LibUI.crearTextfieldStandar();
+		JTextField textField2 = LibUI.crearTextfieldStandar();
+		JTextField textField3 = LibUI.crearTextfieldStandar();
 
-		JButton createButton = new JButton("Crear");
-		JButton volverButton = new JButton("Volver");
+		add(label1, gbc);
+		add(textField1, gbc);
+		add(label2, gbc);
+		add(textField2, gbc);
+		add(label3, gbc);
+		add(textField3, gbc);
+
+		JPanel buttonPanel = new JPanel();
+
+		JButton createButton = LibUI.crearBotonStandar("Crear");
+		JButton volverButton = LibUI.crearBotonStandar("Volver");
 
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					new SoporteTecnicoControlador().crearSoporteTecnico(textField1.getText(), textField2.getText(),
 							textField3.getText());
-					JOptionPane.showMessageDialog(CreacionSoporteTecnico.this, "Soporte Tecnico dado de alta con éxito");
+					LibUI.mostrarMensajeOk(CreacionSoporteTecnico.this, "Soporte Tecnico dado de alta con éxito");
 				} catch (UsuarioDuplicadoException e1) {
-					JOptionPane.showMessageDialog(CreacionSoporteTecnico.this, e1.getMessage());
+					LibUI.mostrarMensajeOk(CreacionSoporteTecnico.this, e1.getMessage());
 				}
 			}
 		});
@@ -59,10 +68,10 @@ public class CreacionSoporteTecnico extends JPanel {
 			}
 		});
 
-		panel.add(createButton);
-		panel.add(volverButton);
+		buttonPanel.add(createButton);
+		buttonPanel.add(volverButton);
 
-		this.add(panel);
+		add(buttonPanel, gbc);
 	}
 
 }
