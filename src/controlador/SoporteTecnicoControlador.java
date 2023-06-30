@@ -27,7 +27,7 @@ public class SoporteTecnicoControlador {
 	}
 
 	public void agregarTipoClase(String nombreClase, boolean esOnline,
-			HashMap<Integer, List<CantidadDetalle>> cantidadPorTipoArticulo) {
+			HashMap<Integer, ArrayList<CantidadDetalle>> cantidadPorTipoArticulo) {
 		supertlonSingleton.agregarTipoClase(nombreClase, esOnline, cantidadPorTipoArticulo);
 	}
 

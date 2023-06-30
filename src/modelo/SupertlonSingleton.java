@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import excepciones.ArticulosInsuficientesException;
 import excepciones.InscripcionNoDisponibleException;
@@ -19,6 +21,14 @@ public class SupertlonSingleton {
 	private static SupertlonSingleton instancia;
 	private ArrayList<Usuario> usuarios;
 	private ArrayList<Profesor> profesores;
+	public ArrayList<Profesor> getProfesores() {
+		return profesores;
+	}
+
+	public void setProfesores(ArrayList<Profesor> profesores) {
+		this.profesores = profesores;
+	}
+
 	private ArrayList<TipoClase> tiposClases;
 	private ArrayList<TipoArticulo> tiposArticulos;
 	private ArrayList<Sede> sedes;
@@ -122,16 +132,25 @@ public class SupertlonSingleton {
 
 	// ready
 	public void agregarTipoClase(String nombreClase, boolean online,
-			HashMap<Integer, List<CantidadDetalle>> cantidadArticulo) {
+			HashMap<Integer, ArrayList<CantidadDetalle>> cantidadArticulo) {
 		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soySoporteTecnico()) {
 			TipoClase nuevoTipoClase = new TipoClase(nombreClase, online, cantidadArticulo);
+			System.out.println(nuevoTipoClase);
 			tiposClases.add(nuevoTipoClase);
 		}
 	}
 
 	// METODOS ADMINISTRATIVO
+
+	public void darBajaArticulo(Articulo articulo) {
+		UsuarioSingleton usuarioSingleton = UsuarioSingleton.getInstance();
+		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
+		if (usuarioActual.soyAdministrativo()) {
+			articulo.darBaja();
+		}
+	}
 
 	// ready
 	public void agendarClase(TipoClase tipoClase, Sede sede, Emplazamiento emplazamiento, LocalDateTime dateInicio,
@@ -162,9 +181,10 @@ public class SupertlonSingleton {
 		Usuario usuarioActual = usuarioSingleton.getUsuarioActual();
 		if (usuarioActual.soyAdministrativo()) {
 			sede.agregarEmplazamiento(new Emplazamiento(tipoEmplazamiento, superficie));
+			System.out.println(sede.getEmplazamientos());
 		}
 	}
-	
+
 	// ready
 	public void incorporarArticulos(Sede sede, TipoArticulo tipoArticulo, String descripcion, double precio,
 			int cantidad) {
@@ -197,18 +217,14 @@ public class SupertlonSingleton {
 	}
 
 	// METODOS PARA MANEJO DE INFO EN VISTAS
-	
-	
-	
-	
+
 	// Getters and Setter
-	
 
 	public ArrayList<Usuario> getUsuarios() {
 		return usuarios;
 	}
 
-	public void setSedes(ArrayList<Sede> sedes) { //eliminar
+	public void setSedes(ArrayList<Sede> sedes) { // eliminar
 		this.sedes = sedes;
 	}
 
@@ -218,6 +234,27 @@ public class SupertlonSingleton {
 
 	public ArrayList<TipoArticulo> getTiposArticulos() {
 		return tiposArticulos;
+	}
+
+	public ArrayList<Articulo> getArticulosUnicos() {
+		ArrayList<Articulo> articulosUnicosSedes = new ArrayList<Articulo>();
+		for (Sede sede : sedes) {
+			ArrayList<Articulo> articulosSede = sede.getArticulos();
+			for (Articulo articulo : articulosSede) {
+				boolean flag = true;
+				for (Articulo articulo2 : articulosUnicosSedes) {
+					if (articulo.getNombre().equals(articulo2.getNombre())
+							&& articulo.getDescripcion().equals(articulo2.getDescripcion())) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag) {
+					articulosUnicosSedes.add(articulo);
+				}
+			}
+		}
+		return articulosUnicosSedes;
 	}
 
 	public ArrayList<Sede> getSedes() {

@@ -69,6 +69,7 @@ public class HomeSoporteTecnico extends JPanel {
         UIManager.put("Button.background", Color.decode("#fca311"));
         UIManager.put("Button.foreground", Color.decode("#14213d"));
         UIManager.put("Button.font", new Font("Dubai", Font.BOLD, 14));
+        
 		sedeMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();

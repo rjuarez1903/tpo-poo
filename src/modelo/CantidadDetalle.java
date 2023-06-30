@@ -1,6 +1,12 @@
 package modelo;
 
 public class CantidadDetalle {
+	@Override
+	public String toString() {
+		return "CantidadDetalle [cantidadPorAlummo=" + cantidadPorAlummo + ", cantidadPorProfesor="
+				+ cantidadPorProfesor + ", detalle=" + detalle + "]";
+	}
+
 	private int cantidadPorAlummo;
 	private int cantidadPorProfesor;
 	private String detalle;

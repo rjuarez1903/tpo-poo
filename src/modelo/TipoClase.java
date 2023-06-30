@@ -9,19 +9,20 @@ import java.util.Map.Entry;
 public class TipoClase {
 	private String nombre;
 	private boolean online;
-	private HashMap<Integer, List<CantidadDetalle>> cantidadArticulo;
+	private HashMap<Integer, ArrayList<CantidadDetalle>> cantidadArticulo;
 
-	public HashMap<Integer, List<CantidadDetalle>> getCantidadArticulo() {
-		return cantidadArticulo;
-	}
 
-	public TipoClase(String nombre, boolean online, HashMap<Integer, List<CantidadDetalle>> cantidadArticulo) {
+	public TipoClase(String nombre, boolean online, HashMap<Integer, ArrayList<CantidadDetalle>> cantidadArticulo) {
 		this.nombre = nombre;
 		this.online = online;
 		this.cantidadArticulo = cantidadArticulo;
 	}
 	
 
+	public HashMap<Integer, ArrayList<CantidadDetalle>> getCantidadArticulo() {
+		return cantidadArticulo;
+	}
+	
 	@Override
 	public String toString() {
 		return "TipoClase [nombre=" + nombre + ", online=" + online + ", cantidadArticulo=" + cantidadArticulo + "]";

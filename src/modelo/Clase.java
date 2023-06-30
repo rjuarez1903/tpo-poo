@@ -23,6 +23,14 @@ public class Clase {
 	private LocalDateTime horaFinal;
 	private double costoClase, ingresoClase;
 
+	public double getCostoClase() {
+		return costoClase;
+	}
+
+	public double getIngresoClase() {
+		return ingresoClase;
+	}
+
 	public Clase(Sede sede, TipoClase tipo, Emplazamiento lugar, LocalDateTime horaInicio, LocalDateTime horaFinal) {
 		this.sede = sede;
 		this.estado = EstadoClase.AGENDADA;
@@ -47,6 +55,7 @@ public class Clase {
 	public void asignarProfesor(Profesor profesor) throws ProfesorNoDisponibleException {
 		if (profesor.aptoParaDictarClase(horaInicio, horaFinal)) {
 			this.profesor = profesor;
+			
 			profesor.addClase(this);
 		} else {
 			throw new ProfesorNoDisponibleException(
@@ -89,7 +98,6 @@ public class Clase {
 	public void calcularRentabilidad() {
 		if (ingresoClase > costoClase) {
 			cambiarEstado(EstadoClase.CONFIRMADA);
-			profesor.addClase(this);
 		}
 	}
 
@@ -121,9 +129,9 @@ public class Clase {
 
 	private void incorporarArticulos() {
 		ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal = new ArrayList<>();
-		HashMap<Integer, List<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
+		HashMap<Integer, ArrayList<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
 		ArrayList<Articulo> articulosClaseAux = new ArrayList<>();
-		for (Entry<Integer, List<CantidadDetalle>> entry : mapa.entrySet()) {
+		for (Entry<Integer, ArrayList<CantidadDetalle>> entry : mapa.entrySet()) {
 			Integer idTipoArticulo = entry.getKey();
 			List<CantidadDetalle> values = entry.getValue();
 			for (CantidadDetalle estruct : values) {
@@ -137,7 +145,7 @@ public class Clase {
 			int cantidadNecesaria = articuloCantidadDetalle.getCantidadTotal();
 			for (Articulo item : sede.getArticulos()) {
 				if (item.getIdTipoArticulo() == articuloCantidadDetalle.getIdTipoArticulo()
-						&& item.getDescripcion() == articuloCantidadDetalle.getDetalle() && !item.isDesgastado()) {
+						&& item.getDescripcion().equals(articuloCantidadDetalle.getDetalle()) && !item.isDesgastado()) {
 					articulosClaseAux.add(item);
 					cantidadNecesaria--;
 				}

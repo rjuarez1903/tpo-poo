@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Administrativo extends Usuario {
@@ -9,9 +10,9 @@ public class Administrativo extends Usuario {
 				+ "]";
 	}
 
-	private List<Sede> sedes;
+	private ArrayList<Sede> sedes;
 
-	public Administrativo(String nombre, String apellido, String numeroDeDocumento, List<Sede> sedes) {
+	public Administrativo(String nombre, String apellido, String numeroDeDocumento, ArrayList<Sede> sedes) {
 		super(nombre, apellido, numeroDeDocumento);
 		this.sedes = sedes;
 	}
@@ -28,10 +29,32 @@ public class Administrativo extends Usuario {
 		return dni;
 	}
 
-	public List<Sede> getSedes() {
+	public ArrayList<Sede> getSedes() {
 		return sedes;
 	}
-	
+
+	public ArrayList<Clase> getClasesAdministradas() {
+		ArrayList<Clase> clasesAdministradas = new ArrayList<Clase>();
+		for (Sede sede : sedes) {
+			var clasesSede = sede.getClases();
+			for (Clase clase : clasesSede) {
+				clasesAdministradas.add(clase);
+			}
+		}
+		return clasesAdministradas;
+	}
+
+	public ArrayList<Clase> getClasesAlmacenadas() {
+		ArrayList<Clase> clasesAlmacenadas = new ArrayList<Clase>();
+		for (Sede sede : sedes) {
+			var clasesSede = sede.getClasesAlmacenadas();
+			for (Clase clase : clasesSede) {
+				clasesAlmacenadas.add(clase);
+			}
+		}
+		return clasesAlmacenadas;
+	}
+
 	public boolean soyAdministrativo() {
 		return true;
 	}

@@ -17,7 +17,8 @@ public class TablaArticuloInterfaz extends JFrame {
 		for (Articulo articulo : articulos) {
 			boolean flag = true;
 			for (Articulo articulo2 : articulosAux) {
-				if (articulo.getNombre().equals(articulo2.getNombre())
+				if (articulo.getNombre()
+						.equals(articulo2.getNombre())
 						&& articulo.getDescripcion().equals(articulo2.getDescripcion())) {
 					flag = false;
 				}

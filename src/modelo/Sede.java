@@ -13,7 +13,7 @@ public class Sede {
 	private String barrio;
 	private double precioAlquiler;
 	private Nivel nivel;
-	private ArrayList<Articulo> articulos;
+	private ArrayList<Articulo> articulos = new ArrayList<>();;
 	private ArrayList<Clase> clases = new ArrayList<>();
 	private ArrayList<Clase> clasesAlmacenadas = new ArrayList<>();
 	private ArrayList<Emplazamiento> emplazamientos = new ArrayList<>();
@@ -22,6 +22,10 @@ public class Sede {
 		this.barrio = barrio;
 		this.precioAlquiler = precioAlquiler;
 		this.nivel = nivel;
+	}
+
+	public void setArticulos(ArrayList<Articulo> articulos) {
+		this.articulos = articulos;
 	}
 
 	public void agregarEmplazamiento(Emplazamiento emplazamiento) {
@@ -48,15 +52,19 @@ public class Sede {
 	public void agendarClase(TipoClase tipoClase, Emplazamiento emplazamiento, LocalDateTime dateInicio,
 			LocalDateTime dateFin) throws ArticulosInsuficientesException {
 		ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal = new ArrayList<>();
-		HashMap<Integer, List<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
-		for (Entry<Integer, List<CantidadDetalle>> entry : mapa.entrySet()) {
+		HashMap<Integer, ArrayList<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
+		for (Entry<Integer, ArrayList<CantidadDetalle>> entry : mapa.entrySet()) {
 			Integer idTipoArticulo = entry.getKey();
+			System.out.println(idTipoArticulo);
 			List<CantidadDetalle> values = entry.getValue();
 			for (CantidadDetalle estruct : values) {
 				int cantTotal = estruct.getCantidadPorAlummo() * 30 + estruct.getCantidadPorProfesor();
 				detalleCantidadesTotal
 						.add(new ArticuloCantidadDetalle(idTipoArticulo, cantTotal, estruct.getDetalle()));
 			}
+		}
+		for (ArticuloCantidadDetalle articuloCantidadDetalle : detalleCantidadesTotal) {
+			System.out.println(articuloCantidadDetalle);
 		}
 		if (verificarArticulosDisponibles(detalleCantidadesTotal)) {
 			Clase nuevaClase = new Clase(this, tipoClase, emplazamiento, dateInicio, dateFin);
@@ -68,16 +76,16 @@ public class Sede {
 
 	// ready
 	public void almacenarClase(Clase clase) {
-		if (clase.getTipo().getNombre() == "Yoga") {
+		if (clase.getTipo().getNombre().equals("Yoga")) {
 			var i = 0;
 			for (Clase claseOnline : clasesAlmacenadas) {
-				if (claseOnline.getTipo().getNombre() == "Yoga") {
+				if (claseOnline.getTipo().getNombre().equals("Yoga")) {
 					i++;
 				}
 			}
 			if (i == 10) {
 				for (Clase claseOnline : clasesAlmacenadas) {
-					if (claseOnline.getTipo().getNombre() == "Yoga") {
+					if (claseOnline.getTipo().getNombre().equals("Yoga")) {
 						clasesAlmacenadas.remove(clasesAlmacenadas.indexOf(claseOnline));
 						break;
 					}
@@ -85,16 +93,16 @@ public class Sede {
 			}
 			clasesAlmacenadas.add(clase);
 		}
-		if (clase.getTipo().getNombre() == "Gimnasia Postural") {
+		if (clase.getTipo().getNombre().equals("Gimnasia Postural")) {
 			var i = 0;
 			for (Clase claseOnline : clasesAlmacenadas) {
-				if (claseOnline.getTipo().getNombre() == "Gimnasia Postural") {
+				if (claseOnline.getTipo().getNombre().equals("Gimnasia Postural")) {
 					i++;
 				}
 			}
 			if (i == 15) {
 				for (Clase claseOnline : clasesAlmacenadas) {
-					if (claseOnline.getTipo().getNombre() == "Gimnasia Postural") {
+					if (claseOnline.getTipo().getNombre().equals("Gimnasia Postural")) {
 						clasesAlmacenadas.remove(clasesAlmacenadas.indexOf(claseOnline));
 						break;
 					}
@@ -103,15 +111,21 @@ public class Sede {
 			clasesAlmacenadas.add(clase);
 		}
 		clasesAlmacenadas.add(clase);
+
+		for (Clase item : clasesAlmacenadas) {
+			System.out.println(item.getTipo().getNombre() + " - " + item.getProfesor().getNombre() + " -costo: "
+					+ item.getCostoClase() + " - ingresos: " + item.getIngresoClase());
+		}
 	}
 
 	// READY
 	private boolean verificarArticulosDisponibles(ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal) {
 		for (ArticuloCantidadDetalle articuloCantidadDetalle : detalleCantidadesTotal) {
 			int cantidadNecesaria = articuloCantidadDetalle.getCantidadTotal();
+			System.out.println("Verificador cantidades inicio " + cantidadNecesaria);
 			for (Articulo item : articulos) {
 				if (item.getIdTipoArticulo() == articuloCantidadDetalle.getIdTipoArticulo()
-						&& item.getDescripcion() == articuloCantidadDetalle.getDetalle() && !item.isDesgastado()) {
+						&& item.getDescripcion().equals(articuloCantidadDetalle.getDetalle()) && !item.isDesgastado()) {
 					cantidadNecesaria--;
 				}
 				if (cantidadNecesaria == 0) {
@@ -119,9 +133,11 @@ public class Sede {
 				}
 			}
 			if (cantidadNecesaria > 0) {
+				System.out.println("Verificador cantidades return false " + cantidadNecesaria);
 				return false;
 			}
 		}
+
 		return true;
 	}
 

@@ -27,8 +27,31 @@ public class Main {
 		SupertlonSingleton supertlonSingleton = SupertlonSingleton.getInstance();
 
 		ArrayList<Sede> sedes = new ArrayList<Sede>();
-		sedes.add(new Sede("Palermo", 100, Nivel.BLACK));
-		sedes.add(new Sede("Flores", 50, Nivel.ORO));
+		ArrayList<Articulo> articulos = new ArrayList<Articulo>();
+		ArrayList<Profesor> profesores = new ArrayList<Profesor>();
+
+		var profe1 = new Profesor("Juan", "Perez", 4000);
+		var profe2 = new Profesor("Lua", "Gomez", 2000);
+		var profe3 = new Profesor("Nicolas", "Suarez", 7000);
+		profesores.add(profe1);
+		profesores.add(profe2);
+		profesores.add(profe3);
+
+		supertlonSingleton.setProfesores(profesores);
+
+		var arti = new TipoArticulo("Colchoneta Gadnic", 2, TipoAmortizacion.USO);
+
+		for (int i = 32; i > 0; i--) {
+			articulos.add(new Articulo(arti, "Pro", 500));
+		}
+
+		var palermo = new Sede("Palermo", 100, Nivel.BLACK);
+		palermo.setArticulos(articulos);
+
+		var flores = new Sede("Flores", 50, Nivel.ORO);
+
+		sedes.add(palermo);
+		sedes.add(flores);
 		sedes.add(new Sede("Recoleta", 1000, Nivel.PLATINUM));
 		sedes.add(new Sede("Caballito", 1000, Nivel.BLACK));
 		sedes.add(new Sede("Abasto", 1100, Nivel.ORO));
@@ -40,9 +63,11 @@ public class Main {
 		supertlonSingleton.setSedes(sedes);
 
 		var usuario5 = new SoporteTecnico("Simon", "Gonzalez", "1");
+		var usuario6 = new Administrativo("Mison", "Lezagon", "2", sedes);
 
 		try {
 			supertlonSingleton.agregarUsuario(usuario5);
+			supertlonSingleton.agregarUsuario(usuario6);
 		} catch (UsuarioDuplicadoException e) {
 			e.printStackTrace();
 		}

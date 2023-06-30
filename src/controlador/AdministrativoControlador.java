@@ -1,11 +1,13 @@
 package controlador;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 import excepciones.ArticulosInsuficientesException;
 import excepciones.ProfesorNoDisponibleException;
 import excepciones.UsuarioDuplicadoException;
+import modelo.Administrativo;
 import modelo.Articulo;
 import modelo.Clase;
 import modelo.Emplazamiento;
@@ -18,6 +20,8 @@ import modelo.SupertlonSingleton;
 import modelo.TipoArticulo;
 import modelo.TipoClase;
 import modelo.TipoEmplazamiento;
+import modelo.Usuario;
+import modelo.UsuarioSingleton;
 
 public class AdministrativoControlador {
 
@@ -27,27 +31,26 @@ public class AdministrativoControlador {
 	}
 
 	public void agendarClase(TipoClase tipoClase, Sede sede, Emplazamiento emplazamiento, LocalDateTime dateInicio,
-			LocalDateTime dateFin) {
+			LocalDateTime dateFin) throws ArticulosInsuficientesException {
 		SupertlonSingleton supertlonSingleton = SupertlonSingleton.getInstance();
-		try {
-			supertlonSingleton.agendarClase(tipoClase, sede, emplazamiento, dateInicio, dateFin);
-		} catch (ArticulosInsuficientesException e) {
+		supertlonSingleton.agendarClase(tipoClase, sede, emplazamiento, dateInicio, dateFin);
 
-		}
 	}
 
-	public void asginarProfesor(Clase clase, Profesor profesor) {
+	public void asginarProfesor(Clase clase, Profesor profesor) throws ProfesorNoDisponibleException {
 		SupertlonSingleton supertlonSingleton = SupertlonSingleton.getInstance();
-		try {
-			supertlonSingleton.asginarProfesor(clase, profesor);
-		} catch (ProfesorNoDisponibleException e) {
-			e.getMessage();
-		}
+		supertlonSingleton.asginarProfesor(clase, profesor);
+
 	}
 
 	public void cambiarEstadoClase(Clase clase, EstadoClase nuevoEstado) {
 		SupertlonSingleton supertlonSingleton = SupertlonSingleton.getInstance();
 		supertlonSingleton.cambiarEstadoClase(clase, nuevoEstado);
+	}
+
+	public void darBajaArticulo(Articulo articulo) {
+		SupertlonSingleton supertlonSingleton = SupertlonSingleton.getInstance();
+		supertlonSingleton.darBajaArticulo(articulo);
 	}
 
 	public void incorporarArticulos(Sede sede, TipoArticulo tipoArticulo, String descripcion, double precio,
@@ -69,5 +72,32 @@ public class AdministrativoControlador {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public ArrayList<Sede> recuperarSedesAdministradas() {
+		Usuario user = UsuarioSingleton.getInstance().getUsuarioActual();
+		if (user.soyAdministrativo()) {
+			Administrativo administrativo = (Administrativo) user;
+			return administrativo.getSedes();
+		}
+		return null;
+	}
+
+	public ArrayList<Clase> recuperarClasesAdministradas() {
+		Usuario user = UsuarioSingleton.getInstance().getUsuarioActual();
+		if (user.soyAdministrativo()) {
+			Administrativo administrativo = (Administrativo) user;
+			return administrativo.getClasesAdministradas();
+		}
+		return null;
+	}
+	
+	public ArrayList<Clase> recuperarClasesAlmacenadas() {
+		Usuario user = UsuarioSingleton.getInstance().getUsuarioActual();
+		if (user.soyAdministrativo()) {
+			Administrativo administrativo = (Administrativo) user;
+			return administrativo.getClasesAlmacenadas();
+		}
+		return null;
 	}
 }

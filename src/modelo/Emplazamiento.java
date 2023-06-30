@@ -1,6 +1,11 @@
 package modelo;
 
 public class Emplazamiento {
+	@Override
+	public String toString() {
+		return "Emplazamiento [tipoEmplazamiento=" + tipoEmplazamiento + ", superficie=" + superficie + "]";
+	}
+
 	private TipoEmplazamiento tipoEmplazamiento;
 	private double superficie;
 

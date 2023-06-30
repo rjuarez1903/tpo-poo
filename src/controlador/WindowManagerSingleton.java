@@ -19,6 +19,7 @@ public class WindowManagerSingleton {
 		contentPane.add(buttonPanel, BorderLayout.NORTH);
 
 		frame.setSize(800, 500);
+		
 		frame.setVisible(true);
 	}
 

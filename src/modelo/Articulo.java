@@ -30,13 +30,14 @@ public class Articulo {
 	}
 
 	
-
+	public void darBaja() {
+		this.desgastado = true;
+		this.numeroUsos = 0;
+		System.out.println(this);
+	}
+	
 	public int getIdArticulo() {
 		return idArticulo;
-	}
-
-	public boolean getIsActive() {
-		return desgastado;
 	}
 
 	public static int getContador() {
@@ -75,13 +76,16 @@ public class Articulo {
 		return costoPorUso;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "Articulo [idArticulo=" + idArticulo + ", idTipoArticulo=" + idTipoArticulo + ", isActive=" + desgastado
-				+ ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio + ", numeroUsos="
-				+ numeroUsos + ", fechaDeFabricacion=" + fechaDeFabricacion + ", tipoAmortizacion=" + tipoAmortizacion
-				+ "]";
+		return "Articulo [idArticulo=" + idArticulo + ", idTipoArticulo=" + idTipoArticulo + ", desgastado="
+				+ desgastado + ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio
+				+ ", numeroUsos=" + numeroUsos + ", fechaDeFabricacion=" + fechaDeFabricacion + ", tipoAmortizacion="
+				+ tipoAmortizacion + ", costoPorUso=" + costoPorUso + "]";
 	}
+
 
 	public TipoAmortizacion getTipoAmortizacion() {
 		return tipoAmortizacion;

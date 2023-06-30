@@ -3,6 +3,7 @@ package controlador;
 import excepciones.UsuarioInexistenteException;
 import modelo.SupertlonSingleton;
 import modelo.UsuarioSingleton;
+import vista.HomeAdministrativo;
 import vista.HomeSoporteTecnico;
 import vista.Login;
 
@@ -19,7 +20,7 @@ public class AccesoControlador {
 		}
 		if (UsuarioSingleton.getInstance().getUsuarioActual().soyAdministrativo()) {
 			System.out.println("Admi");
-			// windowManager.switchWindow(new HomeAdministrativo());
+			 windowManager.switchWindow(new HomeAdministrativo());
 		}
 		if (UsuarioSingleton.getInstance().getUsuarioActual().soySocio()) {
 			System.out.println("Socio");
