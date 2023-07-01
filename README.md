@@ -45,3 +45,4 @@ El equipo de desarrollo del proyecto está conformado por los siguientes integra
 - Agustín Forlino Couly
 - Rodrigo Juarez
 - Franco Pascual
+- Tomás Sarmiento
