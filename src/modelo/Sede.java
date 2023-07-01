@@ -110,12 +110,8 @@ public class Sede {
 			}
 			clasesAlmacenadas.add(clase);
 		}
-		clasesAlmacenadas.add(clase);
 
-		for (Clase item : clasesAlmacenadas) {
-			System.out.println(item.getTipo().getNombre() + " - " + item.getProfesor().getNombre() + " -costo: "
-					+ item.getCostoClase() + " - ingresos: " + item.getIngresoClase());
-		}
+		//clasesAlmacenadas.add(clase); <= Para "en un futuro" poder almacenar otro tipos de clase
 	}
 
 	// READY

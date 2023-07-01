@@ -14,14 +14,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import controlador.AdministrativoControlador;
 import controlador.SoporteTecnicoControlador;
 import controlador.WindowManagerSingleton;
 import excepciones.SedeExistenteException;
 import excepciones.UsuarioDuplicadoException;
 import modelo.Nivel;
+import modelo.UsuarioSingleton;
 
 public class CreacionSocio extends JPanel {
 
+	
 	public CreacionSocio() {
 
 		setLayout(new GridBagLayout());
@@ -56,8 +59,13 @@ public class CreacionSocio extends JPanel {
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					new SoporteTecnicoControlador().crearSocio(textField1.getText(), textField2.getText(),
-							textField3.getText(), (Nivel) comboBox.getSelectedItem());
+					if(UsuarioSingleton.getInstance().getUsuarioActual().soySoporteTecnico()) {						
+						new SoporteTecnicoControlador().crearSocio(textField1.getText(), textField2.getText(),
+								textField3.getText(), (Nivel) comboBox.getSelectedItem());
+					}else { // Es administrativo
+						new AdministrativoControlador().crearSocio(textField1.getText(), textField2.getText(),
+								textField3.getText(), (Nivel) comboBox.getSelectedItem());
+					}
 					LibUI.mostrarMensajeOk(CreacionSocio.this, "Socio dado de alta con éxito");
 				} catch (UsuarioDuplicadoException e1) {
 					LibUI.mostrarMensajeError(CreacionSocio.this, e1.getMessage());
@@ -68,7 +76,11 @@ public class CreacionSocio extends JPanel {
 		volverButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
-				windowManager.switchWindow(new HomeSoporteTecnico());
+				if(UsuarioSingleton.getInstance().getUsuarioActual().soySoporteTecnico()) {					
+					windowManager.switchWindow(new HomeSoporteTecnico());
+				}else { // Es administrativo
+					windowManager.switchWindow(new SociosMenu());
+				}
 			}
 		});
 

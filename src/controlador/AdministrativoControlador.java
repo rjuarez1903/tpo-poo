@@ -91,12 +91,27 @@ public class AdministrativoControlador {
 		}
 		return null;
 	}
-	
+
 	public ArrayList<Clase> recuperarClasesAlmacenadas() {
 		Usuario user = UsuarioSingleton.getInstance().getUsuarioActual();
 		if (user.soyAdministrativo()) {
 			Administrativo administrativo = (Administrativo) user;
 			return administrativo.getClasesAlmacenadas();
+		}
+		return null;
+	}
+
+	public ArrayList<Socio> recuperarSocios() {
+		Usuario user = UsuarioSingleton.getInstance().getUsuarioActual();
+		ArrayList<Socio> socios = new ArrayList<Socio>();
+		if (user.soyAdministrativo()) {
+			var usuarios = SupertlonSingleton.getInstance().getUsuarios();
+			for (Usuario item : usuarios) {
+				if (item.soySocio()) {
+					socios.add((Socio) item);
+				}
+			}
+			return socios;
 		}
 		return null;
 	}

@@ -21,47 +21,47 @@ import modelo.TipoEmplazamiento;
 
 public class ClasesAlmacenadas extends JPanel {
 
-    private JTable table;
-    private JScrollPane scrollPane;
+	private JTable table;
+	private JScrollPane scrollPane;
 
-    public ClasesAlmacenadas(ArrayList<Clase> clases) {
-        this.setLayout(new BorderLayout());
+	public ClasesAlmacenadas(ArrayList<Clase> clases) {
+		this.setLayout(new BorderLayout());
 
-        var title = LibUI.crearLabelStandar("Clases en DB Streaming");
-        JButton volverButton = LibUI.crearBotonStandar("Volver");
+		var title = LibUI.crearLabelStandar("Clases en DB Streaming");
+		JButton volverButton = LibUI.crearBotonStandar("Volver");
 
-        String[] columnNames = { "Nombre", "Sede", "Estado", "Fecha Finalizacion", "Profesor" };
-        Object[][] data = new Object[clases.size()][5];
+		String[] columnNames = { "Nombre", "Sede", "Estado", "Cantidad Alumnos", "Fecha Finalizacion", "Profesor" };
+		Object[][] data = new Object[clases.size()][6];
 
-        for (int i = 0; i < clases.size(); i++) {
-            Clase clase = clases.get(i);
+		for (int i = 0; i < clases.size(); i++) {
+			Clase clase = clases.get(i);
 
-            data[i][0] = clase.getTipo().getNombre();
-            data[i][1] = clase.getSede().getBarrio();
-            data[i][2] = clase.getEstado();
-            data[i][3] = clase.getHoraFinal();
-            data[i][4] = clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido();
-        }
+			data[i][0] = clase.getTipo().getNombre();
+			data[i][1] = clase.getSede().getBarrio();
+			data[i][2] = clase.getEstado();
+			data[i][3] = clase.getSocios().size();
+			data[i][4] = clase.getHoraFinal();
+			data[i][5] = clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido();
+		}
 
-        volverButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
-                windowManager.switchWindow(new ClasesMenu());
-            }
-        });
+		volverButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
+				windowManager.switchWindow(new ClasesMenu());
+			}
+		});
 
-        table = new JTable(data, columnNames);
-        scrollPane = new JScrollPane(table);
+		table = new JTable(data, columnNames);
+		scrollPane = new JScrollPane(table);
 
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        titlePanel.add(title);
+		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		titlePanel.add(title);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(volverButton);
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		buttonPanel.add(volverButton);
 
-        this.add(titlePanel, BorderLayout.NORTH);
-        this.add(scrollPane, BorderLayout.CENTER);
-        this.add(buttonPanel, BorderLayout.SOUTH);
-    }
+		this.add(titlePanel, BorderLayout.NORTH);
+		this.add(scrollPane, BorderLayout.CENTER);
+		this.add(buttonPanel, BorderLayout.SOUTH);
+	}
 }
-

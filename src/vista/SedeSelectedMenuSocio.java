@@ -19,24 +19,27 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
 import controlador.AdministrativoControlador;
+import controlador.SocioControlador;
 import controlador.WindowManagerSingleton;
+import excepciones.InscripcionNoDisponibleException;
 import modelo.Clase;
 import modelo.EstadoClase;
 import modelo.Sede;
 import modelo.TipoEmplazamiento;
+import modelo.UsuarioSingleton;
 
-public class ClasesMenu extends JPanel {
+public class SedeSelectedMenuSocio extends JPanel {
 
-	private ArrayList<Clase> clasesAdministradas;
-	private ArrayList<Clase> clasesAlmacenadas = new ArrayList<>();
-	private String[] columnNames = { "Nombre", "Sede", "Socios Inscriptos", "Estado", "Lugar", "Hora de Inicio",
-			"Hora de Finalizacion", "Costo de la clase", "Ingresos de la clase", "Profesor", "Accion" };
+	private ArrayList<Clase> clasesSede;
+	private Sede sede;
+	private String[] columnNames = { "Nombre", "Inscripto", "Cantidad Alumnos", "Estado", "Lugar", "Hora de Inicio",
+			"Hora de Finalizacion", "Profesor", "Accion" };
 	private DefaultTableModel tableModel;
 	private JTable table;
 
-	public ClasesMenu() {
-		this.clasesAdministradas = new AdministrativoControlador().recuperarClasesAdministradas();
-		this.clasesAlmacenadas = new AdministrativoControlador().recuperarClasesAlmacenadas();
+	public SedeSelectedMenuSocio(Sede selectedSede) {
+		this.sede = selectedSede;
+		this.clasesSede = selectedSede.getClases();
 		initializeTable();
 		addComponents();
 	}
@@ -45,65 +48,45 @@ public class ClasesMenu extends JPanel {
 		tableModel = new DefaultTableModel(columnNames, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return column == 10;
+				return column == 8;
 			}
 		};
 
-		for (Clase clase : clasesAdministradas) {
+		for (Clase clase : clasesSede) {
 			String nombre = clase.getTipo().getNombre();
-			String sede = clase.getSede().getBarrio();
+			String inscripto = new SocioControlador().inscripto(clase) ? "Inscripto" : "-";
 			int cantidadSocios = clase.getSocios().size();
 			EstadoClase estado = clase.getEstado();
 			TipoEmplazamiento lugar = clase.getLugar().getTipoEmplazamiento();
 			LocalDateTime horaInicio = clase.getHoraInicio();
 			LocalDateTime horaFinalizacion = clase.getHoraFinal();
-			double costoClase = clase.getCostoClase();
-			double ingresoClase = clase.getIngresoClase();
 			String profesor = clase.getProfesor() == null ? "No asignado"
 					: clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido();
-			Object[] rowData = { nombre, sede, cantidadSocios, estado, lugar, horaInicio, horaFinalizacion, costoClase,
-					ingresoClase, profesor, "Administrar" };
+			Object[] rowData = { nombre, inscripto, cantidadSocios, estado, lugar, horaInicio, horaFinalizacion,
+					profesor, "Inscribirse" };
 			tableModel.addRow(rowData);
 		}
 
 		table = new JTable(tableModel);
-		table.getColumnModel().getColumn(10).setCellRenderer(new ButtonRenderer());
-		table.getColumnModel().getColumn(10).setCellEditor(new ButtonEditor());
+		table.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
+		table.getColumnModel().getColumn(8).setCellEditor(new ButtonEditor());
 	}
 
 	private void addComponents() {
 		setLayout(new BorderLayout());
 
-		JLabel titulo = LibUI.crearLabelStandar("Clases Administradas");
-		JButton verClasesButton = LibUI.crearBotonStandar("Ver Clases Almacenadas");
-		JButton crearClaseButton = LibUI.crearBotonStandar("Crear Clase");
+		JLabel titulo = LibUI.crearLabelStandar("Clases sede " + sede.getBarrio());
 		JButton volverButton = LibUI.crearBotonStandar("Volver");
 		JPanel topPanel = new JPanel();
-
-		verClasesButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				WindowManagerSingleton.getInstance().switchWindow(new ClasesAlmacenadas(clasesAlmacenadas));
-
-			}
-		});
-
-		crearClaseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				WindowManagerSingleton.getInstance().switchWindow(new CreacionClase());
-			}
-		});
 
 		volverButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
-				windowManager.switchWindow(new HomeAdministrativo());
+				windowManager.switchWindow(new HomeSocio());
 			}
 		});
 
 		topPanel.add(titulo);
-		topPanel.add(verClasesButton);
-		topPanel.add(crearClaseButton);
 		topPanel.add(volverButton);
 		add(topPanel, BorderLayout.NORTH);
 
@@ -117,7 +100,7 @@ public class ClasesMenu extends JPanel {
 		private JButton button;
 
 		public ButtonRenderer() {
-			button = new JButton("Administrar");
+			button = new JButton("Inscribirse");
 		}
 
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -131,12 +114,18 @@ public class ClasesMenu extends JPanel {
 		private Clase claseSeleccionada;
 
 		public ButtonEditor() {
-			button = new JButton("Administrar");
+			button = new JButton("Inscribirse");
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int row = table.convertRowIndexToModel(table.getEditingRow());
-					claseSeleccionada = clasesAdministradas.get(row);
-					WindowManagerSingleton.getInstance().switchWindow(new EdicionClase(claseSeleccionada));
+					claseSeleccionada = clasesSede.get(row);
+					try {
+						new SocioControlador().inscribirseClase(claseSeleccionada);
+						LibUI.mostrarMensajeOk(SedeSelectedMenuSocio.this, "Inscripto a clase exitosamente");
+						WindowManagerSingleton.getInstance().switchWindow(new SedeSelectedMenu(sede));
+					} catch (InscripcionNoDisponibleException e1) {
+						LibUI.mostrarMensajeError(SedeSelectedMenuSocio.this, e1.getMessage());
+					}
 					fireEditingStopped();
 				}
 			});
@@ -151,4 +140,5 @@ public class ClasesMenu extends JPanel {
 			return button.getText();
 		}
 	}
+
 }

@@ -44,7 +44,7 @@ public class HomeAdministrativo extends JPanel {
 		gestionarSociosMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
-				//windowManager.switchWindow(new sociosMenu());
+				windowManager.switchWindow(new SociosMenu());
 
 			}
 		});

@@ -91,15 +91,13 @@ public class EdicionClase extends JPanel {
 		guardarEstadoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				EstadoClase selectedEstado = (EstadoClase) estadoComboBox.getSelectedItem();
-
 				if (selectedEstado == EstadoClase.FINALIZADA && !flag) {
 					LibUI.mostrarMensajeError(EdicionClase.this,
 							"La clase debe tener un profesor asignado para poder ejecutarse");
-					return;
+				} else {
+					new AdministrativoControlador().cambiarEstadoClase(claseSelected, selectedEstado);
+					LibUI.mostrarMensajeOk(EdicionClase.this, "Estado de clase guardado con éxito");
 				}
-
-				new AdministrativoControlador().cambiarEstadoClase(claseSelected, selectedEstado);
-				LibUI.mostrarMensajeOk(EdicionClase.this, "Estado de clase guardado con éxito");
 
 			}
 		});

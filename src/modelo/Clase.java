@@ -55,7 +55,7 @@ public class Clase {
 	public void asignarProfesor(Profesor profesor) throws ProfesorNoDisponibleException {
 		if (profesor.aptoParaDictarClase(horaInicio, horaFinal)) {
 			this.profesor = profesor;
-			
+
 			profesor.addClase(this);
 		} else {
 			throw new ProfesorNoDisponibleException(
@@ -102,16 +102,25 @@ public class Clase {
 	}
 
 	public void inscribirse(Usuario socio) throws InscripcionNoDisponibleException {
+		Socio aux = (Socio) socio;
 		if (sociosInscriptos.size() >= 30) {
 			throw new InscripcionNoDisponibleException("La clase alcanzó el máximo de socios inscriptos");
 		}
 		if (lugar.getSuperficie() / (sociosInscriptos.size() + 1) < 2) {
 			throw new InscripcionNoDisponibleException("La clase no cuenta con el espacio disponible para inscribirse");
 		}
+		if (!aux.claseDiariaDisponible(horaFinal)) {
+			throw new InscripcionNoDisponibleException("Ya está inscripto a una clase para el dia de hoy");
+		}
+		if (!aux.getIsActive()) {
+			throw new InscripcionNoDisponibleException("El socio se encuentra dado de baja");
+		}
 		if (profesor == null) {
 			throw new InscripcionNoDisponibleException("La clase no cuenta con profesor agendado al momento");
 		}
-		sociosInscriptos.add((Socio) socio);
+
+		sociosInscriptos.add(aux);
+		aux.agendarClase(this);
 		incorporarArticulos();
 		calcularCostos();
 		calcularIngresos();

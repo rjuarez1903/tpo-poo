@@ -20,29 +20,19 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
 import controlador.AdministrativoControlador;
+import controlador.SocioControlador;
 import controlador.WindowManagerSingleton;
-import modelo.Articulo;
 import modelo.Sede;
-import modelo.TipoAmortizacion;
-import modelo.TipoArticulo;
 
-public class SedesMenu extends JPanel {
+public class HomeSocio extends JPanel {
 
-	private ArrayList<Sede> sedesAdministradas;
-	private String[] columnNames = { "Barrio", "Accion" };
+	private ArrayList<Sede> sedesDisponibles;
+	private String[] columnNames = { "Barrio", "Nivel", "Accion" };
 	private DefaultTableModel tableModel;
 	private JTable table;
 
-	public SedesMenu() {
-		sedesAdministradas = new AdministrativoControlador().recuperarSedesAdministradas();
-
-		JButton volverButton = LibUI.crearBotonStandar("Volver");
-		volverButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
-				windowManager.switchWindow(new HomeAdministrativo());
-			}
-		});
+	public HomeSocio() {
+		sedesDisponibles = new SocioControlador().recuperarSedesDisponibles();
 
 		initializeTable();
 		addComponents();
@@ -52,24 +42,24 @@ public class SedesMenu extends JPanel {
 		tableModel = new DefaultTableModel(columnNames, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return column == 1;
+				return column == 2;
 			}
 		};
 
-		for (Sede sede : sedesAdministradas) {
-			Object[] rowData = { sede.getBarrio(), "Seleccionar" };
+		for (Sede sede : sedesDisponibles) {
+			Object[] rowData = { sede.getBarrio(), sede.getNivel(), "Seleccionar" };
 			tableModel.addRow(rowData);
 		}
 
 		table = new JTable(tableModel);
-		table.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer());
-		table.getColumnModel().getColumn(1).setCellEditor(new ButtonEditor());
+		table.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer());
+		table.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor());
 	}
 
 	private void addComponents() {
 		setLayout(new BorderLayout());
-		JLabel titleLabel = new JLabel("Sedes Administradas");
-		titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+		JLabel titleLabel = new JLabel("Sedes Disponibles");
+		titleLabel.setFont(new Font("Dubai", Font.BOLD, 16));
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -80,7 +70,7 @@ public class SedesMenu extends JPanel {
 		volverButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WindowManagerSingleton windowManager = WindowManagerSingleton.getInstance();
-				windowManager.switchWindow(new HomeAdministrativo());
+				windowManager.switchWindow(new Login());
 			}
 		});
 		JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -110,9 +100,10 @@ public class SedesMenu extends JPanel {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int row = table.convertRowIndexToModel(table.getEditingRow());
-					selectedSede = sedesAdministradas.get(row);
-					WindowManagerSingleton.getInstance().switchWindow(new SedeSelectedMenu(selectedSede));
+					selectedSede = sedesDisponibles.get(row);
 					fireEditingStopped();
+					WindowManagerSingleton.getInstance().switchWindow(new SedeSelectedMenuSocio(selectedSede));
+
 				}
 			});
 		}
@@ -126,6 +117,5 @@ public class SedesMenu extends JPanel {
 			return button.getText();
 		}
 	}
+
 }
-
-
