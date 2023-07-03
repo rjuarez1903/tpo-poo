@@ -55,16 +55,12 @@ public class Sede {
 		HashMap<Integer, ArrayList<CantidadDetalle>> mapa = tipoClase.getCantidadArticulo();
 		for (Entry<Integer, ArrayList<CantidadDetalle>> entry : mapa.entrySet()) {
 			Integer idTipoArticulo = entry.getKey();
-			System.out.println(idTipoArticulo);
 			List<CantidadDetalle> values = entry.getValue();
 			for (CantidadDetalle estruct : values) {
 				int cantTotal = estruct.getCantidadPorAlummo() * 30 + estruct.getCantidadPorProfesor();
 				detalleCantidadesTotal
 						.add(new ArticuloCantidadDetalle(idTipoArticulo, cantTotal, estruct.getDetalle()));
 			}
-		}
-		for (ArticuloCantidadDetalle articuloCantidadDetalle : detalleCantidadesTotal) {
-			System.out.println(articuloCantidadDetalle);
 		}
 		if (verificarArticulosDisponibles(detalleCantidadesTotal)) {
 			Clase nuevaClase = new Clase(this, tipoClase, emplazamiento, dateInicio, dateFin);
@@ -111,14 +107,14 @@ public class Sede {
 			clasesAlmacenadas.add(clase);
 		}
 
-		//clasesAlmacenadas.add(clase); <= Para "en un futuro" poder almacenar otro tipos de clase
+		// clasesAlmacenadas.add(clase); <= Para "en un futuro" poder almacenar otro
+		// tipos de clase
 	}
 
 	// READY
 	private boolean verificarArticulosDisponibles(ArrayList<ArticuloCantidadDetalle> detalleCantidadesTotal) {
 		for (ArticuloCantidadDetalle articuloCantidadDetalle : detalleCantidadesTotal) {
 			int cantidadNecesaria = articuloCantidadDetalle.getCantidadTotal();
-			System.out.println("Verificador cantidades inicio " + cantidadNecesaria);
 			for (Articulo item : articulos) {
 				if (item.getIdTipoArticulo() == articuloCantidadDetalle.getIdTipoArticulo()
 						&& item.getDescripcion().equals(articuloCantidadDetalle.getDetalle()) && !item.isDesgastado()) {
@@ -129,7 +125,9 @@ public class Sede {
 				}
 			}
 			if (cantidadNecesaria > 0) {
-				System.out.println("Verificador cantidades return false " + cantidadNecesaria);
+				System.out.println("Para el articulo [ID Tipo Articulo: " + articuloCantidadDetalle.getIdTipoArticulo()
+						+ " - Detalle: " + articuloCantidadDetalle.getDetalle() + "] Faltan " + cantidadNecesaria
+						+ " unidades en el stock de la Sede");
 				return false;
 			}
 		}

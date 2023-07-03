@@ -10,7 +10,7 @@ public class WindowManagerSingleton {
 	private JPanel currentWindow;
 
 	private WindowManagerSingleton() {
-		frame = new JFrame("Window Manager");
+		frame = new JFrame("Supertlon GYM");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel buttonPanel = new JPanel();

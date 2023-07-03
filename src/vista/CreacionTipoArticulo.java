@@ -18,7 +18,7 @@ public class CreacionTipoArticulo extends JPanel {
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.insets = new Insets(5, 5, 5, 5);
 
-		JLabel label1 = LibUI.crearLabelStandar("Nombre");
+		JLabel label1 = LibUI.crearLabelStandar("Articulo & Marca");
 		JLabel label2 = LibUI.crearLabelStandar("Cantidad de usos/dias");
 		JLabel label4 = LibUI.crearLabelStandar("Tipo Amortización");
 

@@ -122,7 +122,7 @@ public class SedeSelectedMenuSocio extends JPanel {
 					try {
 						new SocioControlador().inscribirseClase(claseSeleccionada);
 						LibUI.mostrarMensajeOk(SedeSelectedMenuSocio.this, "Inscripto a clase exitosamente");
-						WindowManagerSingleton.getInstance().switchWindow(new SedeSelectedMenu(sede));
+						WindowManagerSingleton.getInstance().switchWindow(new SedeSelectedMenuSocio(sede));
 					} catch (InscripcionNoDisponibleException e1) {
 						LibUI.mostrarMensajeError(SedeSelectedMenuSocio.this, e1.getMessage());
 					}

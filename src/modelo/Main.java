@@ -66,7 +66,9 @@ public class Main {
 
 		var usuario6 = new Administrativo("Mison", "Lezagon", "2", sedes);
 		var usuario7 = new Socio("Pedro", "Paul", "3", Nivel.ORO);
+		
 */
+		
 		var soporteTecnicoDefault = new SoporteTecnico("Simon", "Gonzalez", "1");
 		try {
 			supertlonSingleton.agregarUsuario(soporteTecnicoDefault);

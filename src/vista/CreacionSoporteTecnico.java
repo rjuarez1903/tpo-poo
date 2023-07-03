@@ -56,7 +56,7 @@ public class CreacionSoporteTecnico extends JPanel {
 							textField3.getText());
 					LibUI.mostrarMensajeOk(CreacionSoporteTecnico.this, "Soporte Tecnico dado de alta con éxito");
 				} catch (UsuarioDuplicadoException e1) {
-					LibUI.mostrarMensajeOk(CreacionSoporteTecnico.this, e1.getMessage());
+					LibUI.mostrarMensajeError(CreacionSoporteTecnico.this, e1.getMessage());
 				}
 			}
 		});
